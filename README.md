@@ -22,4 +22,10 @@ Manually run the formatter:
 pnpm format
 ```
 
+Check Formatting:
+
+```bash
+npx prettier . --check
+```
+
 See `.prettierrc` for the prettier config

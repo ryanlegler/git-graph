@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+node_modules
+**/.next/**
+**/_next/**
+**/dist/**
+**/__tmp__/**
+.github
+next-env.d.ts

@@ -1,27 +1,39 @@
 {
-    "name": "github-contribution",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "format": "prettier --write ."
-    },
-    "dependencies": {
-        "next": "14.0.4",
-        "react": "^18",
-        "react-dom": "^18",
-        "react-github-calendar": "^4.0.8"
-    },
-    "devDependencies": {
-        "@types/node": "^20",
-        "@types/react": "^18",
-        "@types/react-dom": "^18",
-        "eslint": "^8",
-        "eslint-config-next": "14.0.4",
-        "prettier": "3.1.1",
-        "typescript": "^5"
-    }
+  "name": "github-contribution",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-github-calendar": "^4.0.8"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.7",
+    "@storybook/addon-interactions": "^7.6.7",
+    "@storybook/addon-links": "^7.6.7",
+    "@storybook/addon-onboarding": "^1.0.10",
+    "@storybook/blocks": "^7.6.7",
+    "@storybook/nextjs": "^7.6.7",
+    "@storybook/react": "^7.6.7",
+    "@storybook/test": "^7.6.7",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "eslint-plugin-storybook": "^0.6.15",
+    "prettier": "3.1.1",
+    "storybook": "^7.6.7",
+    "typescript": "^5"
+  }
 }

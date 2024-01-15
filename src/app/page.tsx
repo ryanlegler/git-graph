@@ -1,22 +1,33 @@
-'use client';
-import GitHubCalendar from 'react-github-calendar';
+import { StyledFlex } from '@/components/ui/flex';
+import { UserNameInput } from '@/components/userNameInput/UserNameInput';
+
+import { css } from 'styled-system/css';
 
 export default function Home() {
-    const colorScale = ['#00429d', '#1f58a6', '#376ead', '#ffa59e', '#dd4c65'];
-
     return (
-        <main>
-            <GitHubCalendar username='ryanlegler' />
-            <GitHubCalendar
-                username='rttnbrgr'
-                blockMargin={2}
-                blockRadius={50}
-                blockSize={25}
-                theme={{
-                    light: colorScale,
-                    dark: colorScale,
-                }}
-            />
-        </main>
+        <StyledFlex
+            direction='vertical'
+            hAlign='center'
+            vAlign='middle'
+            gap={4}
+            className={css({
+                h: '100vh',
+            })}>
+            <span
+                className={css({
+                    fontSize: 100,
+                })}>
+                🐙
+            </span>
+            <h1
+                className={css({
+                    fontSize: 40,
+                    fontWeight: 900,
+                })}>
+                Git Graph
+            </h1>
+
+            <UserNameInput />
+        </StyledFlex>
     );
 }

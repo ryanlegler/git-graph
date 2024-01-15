@@ -53,7 +53,7 @@ const inputStyles = cva({
     base: {
         px: '3',
         py: '2',
-        bg: 'github.1',
+        bg: 'github.100',
         color: 'gray.1',
         borderRadius: 'md',
         _placeholder: { color: 'gray.9' },

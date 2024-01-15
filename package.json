@@ -19,6 +19,7 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-github-calendar": "^4.0.8",
+        "tsconfig-paths-webpack-plugin": "^4.1.0",
         "zod": "^3.22.4",
         "zod-form-data": "^2.0.2"
     },

@@ -32,7 +32,7 @@ export function UserNameInput() {
         setTimeout(() => {
             setShowStatus(false);
         }, 500);
-    }, [state]);
+    }, []);
 
     // we only need this id we want to delay the redirect to let the user see the success message
     useEffect(() => {
@@ -41,7 +41,7 @@ export function UserNameInput() {
                 router.push(`/user/${state.data}`);
             }, 1000); // we intentionally delay the redirect to give the user a chance to see the success message
         }
-    }, [state.status, showStatus]);
+    }, [state.status, showStatus, state.data, router]);
 
     return (
         <form

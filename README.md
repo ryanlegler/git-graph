@@ -29,3 +29,7 @@ npx prettier . --check
 ```
 
 See `.prettierrc` for the prettier config
+
+## Design
+
+Design work can be found [here](https://www.figma.com/file/y1VpCWYhlczOIvHNJjLKm6/GitGraph?type=design&node-id=3%3A81&mode=design&t=w0Gnz8fvsIV2Wg41-1)

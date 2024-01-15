@@ -30,13 +30,13 @@ export function UserNameInput() {
         // this is a  to prevents a stale status messages from showing.
         // I could get around this if i had a way of imperatively resetting the form state
         setTimeout(() => {
-            setShowStatus(false);
+            setShowStatus(true);
         }, 500);
     }, []);
 
     // we only need this id we want to delay the redirect to let the user see the success message
     useEffect(() => {
-        if (!showStatus && state.status === 'success') {
+        if (showStatus && state.status === 'success') {
             setTimeout(() => {
                 router.push(`/user/${state.data}`);
             }, 1000); // we intentionally delay the redirect to give the user a chance to see the success message

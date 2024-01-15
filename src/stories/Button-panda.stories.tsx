@@ -1,32 +1,20 @@
-import { Button } from '@/components/ui/button';
-import { StyledFlex } from '@/components/ui/flex';
 import type { Meta, StoryObj } from '@storybook/react';
-import { css } from 'styled-system/css';
+import { css, cva } from 'styled-system/css';
+import { styled } from 'styled-system/jsx';
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
     title: 'Button/Panda',
-    decorators: [
-        (Story) => {
-            // this is to force dark mode - ideally we will add a switcher
-            document.body.classList.add('dark');
-            return Story();
-        },
-    ],
     parameters: {
-        // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
         layout: 'centered',
     },
-    // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
-    // More on argTypes: https://storybook.js.org/docs/api/argtypes
     argTypes: {},
 } satisfies Meta<typeof HTMLButtonElement>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+// method 1
 export const Primary: Story = {
     render: (args) => (
         <button
@@ -40,11 +28,51 @@ export const Primary: Story = {
                 _hover: {
                     bg: 'github.100',
                 },
-                _focus: {
-                    bg: 'github.100',
-                },
             })}>
             Click Me
         </button>
     ),
+};
+
+// method 2
+const flexClassNames = css({
+    bg: 'github.400',
+    px: 3,
+    py: 2,
+    borderRadius: 'md',
+    color: 'white',
+    cursor: 'pointer',
+    _hover: {
+        bg: 'github.100',
+    },
+    _focus: {
+        bg: 'github.100',
+    },
+});
+
+export const ExtractedStyles: Story = {
+    render: () => <button className={flexClassNames}>Click Me</button>,
+};
+
+// method 3
+const flexRecipe = cva({
+    base: {
+        bg: 'github.400',
+        px: 3,
+        py: 2,
+        borderRadius: 'md',
+        color: 'white',
+        cursor: 'pointer',
+        _hover: {
+            bg: 'github.100',
+        },
+        _focus: {
+            bg: 'github.100',
+        },
+    },
+});
+const StyledButton = styled('div', flexRecipe);
+
+export const Styled: Story = {
+    render: () => <StyledButton>Click Me</StyledButton>,
 };

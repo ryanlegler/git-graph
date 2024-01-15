@@ -1,7 +1,7 @@
 'use server';
 
 import { UserNameInputState, userNameSchema } from '@/components/userNameInput/types';
-import { getProfile } from '@/dataLayer/getProfile';
+import { UserResponse, getProfile } from '@/dataLayer/getProfile';
 
 export async function validateProfile(_: any, formData: FormData): Promise<UserNameInputState> {
     const userName = formData.get('userName');
@@ -10,7 +10,7 @@ export async function validateProfile(_: any, formData: FormData): Promise<UserN
     if (schemaResponse.success) {
         const { userName } = schemaResponse?.data;
         const profile = await getProfile(userName);
-        if ((profile as any)?.message === 'Not Found') {
+        if ((profile as UserResponse)?.message === 'Not Found') {
             return {
                 message: 'this github username is invalid ',
                 status: 'error',

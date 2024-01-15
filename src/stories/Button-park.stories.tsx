@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { StyledFlex } from '@/components/ui/flex';
 import type { Meta, StoryObj } from '@storybook/react';
+import { css } from 'styled-system/css';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-    title: 'Button/park',
+    title: 'Button/ParkUI',
     component: Button,
     decorators: [
         (Story) => {
@@ -39,7 +40,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Primary: Story = {
+export const WithControls: Story = {
     args: {
         variant: 'solid',
         children: 'Click Me',
@@ -74,5 +75,32 @@ export const AllTheVariants: Story = {
             <Button variant='ghost'>ghost</Button>
             <Button variant='outline'>outline</Button>
         </StyledFlex>
+    ),
+};
+
+// This is maybe NOT the best way to handle things...
+// In this case The utility of park-ui seems questionable - note how the variants will interact with the css function derived classes
+export const WithCSS: Story = {
+    args: {
+        variant: 'solid',
+        children: 'Click Me',
+        size: 'md',
+    },
+    render: (args) => (
+        <Button
+            {...args}
+            className={css({
+                bg: 'github.400',
+                px: 3,
+                py: 2,
+                borderRadius: 'md',
+                color: 'white',
+                cursor: 'pointer',
+                _hover: {
+                    bg: 'github.100',
+                },
+            })}>
+            Custom
+        </Button>
     ),
 };

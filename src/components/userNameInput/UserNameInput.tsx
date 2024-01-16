@@ -1,65 +1,64 @@
 'use client';
+import { useCallback, useState } from 'react';
 import { css } from 'styled-system/css';
 import { useFormState } from 'react-dom';
 
 // types
-import { UserNameInputState } from './types';
+import { userNameSchema } from './types';
 
 // components
 import { StyledFlex } from '../ui/flex';
 import { Submit } from './Submit';
 
-// actions
-import { validateProfile } from '@/app/actions/validateProfile';
-import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+// styled components
 import { StyledInput } from './styledComponents';
 
+// actions
+import { validateProfile } from '@/app/actions/validateProfile';
+
 export function UserNameInput() {
-    const router = useRouter();
+    const [showFormError, setShowFormError] = useState(true);
+    const [clientErrorMessage, setClientErrorMessage] = useState('');
+    const [formErrorMessage, formAction] = useFormState(validateProfile, '');
 
-    const [showStatus, setShowStatus] = useState(false);
-
-    const [state, formAction] = useFormState(validateProfile, {
-        status: 'idle',
-        message: 'Enter a GitHub user name',
-        data: '',
-    } satisfies UserNameInputState);
-
-    const handleResetDirty = useCallback(() => {
-        // this is a  to prevents a stale status messages from showing.
-        // I could get around this if i had a way of imperatively resetting the form state
-        setTimeout(() => {
-            setShowStatus(true);
-        }, 500);
+    // client side validation on input change
+    const handleInputOnChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setShowFormError(false);
+        const validation = userNameSchema.safeParse(event.target.value);
+        if (!validation.success) {
+            setClientErrorMessage(JSON.parse(validation?.error?.message)?.[0]?.message);
+        } else {
+            setClientErrorMessage('');
+        }
     }, []);
 
-    // we only need this id we want to delay the redirect to let the user see the success message
-    useEffect(() => {
-        if (showStatus && state.status === 'success') {
-            setTimeout(() => {
-                router.push(`/user/${state.data}`);
-            }, 1000); // we intentionally delay the redirect to give the user a chance to see the success message
-        }
-    }, [state.status, showStatus, state.data, router]);
+    // show form error message on submit
+    const handleOnFormSubmit = useCallback(() => {
+        setShowFormError(true);
+    }, []);
+
+    // show client side error message or server side error message
+    const errorMessage = clientErrorMessage || (showFormError && formErrorMessage);
 
     return (
         <form
-            onChange={() => setShowStatus(true)}
-            onSubmit={handleResetDirty}
             action={formAction}
+            onSubmit={handleOnFormSubmit}
             className={css({
                 display: 'flex',
                 gap: 3,
             })}>
             <StyledFlex vAlign='middle' hAlign='center' direction='vertical' gap={4}>
                 <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
-                    <StyledInput type='text' name='userName' placeholder='GitHub User Name' />
-                    <Submit />
+                    <StyledInput
+                        type='text'
+                        name='userName'
+                        placeholder='GitHub User Name'
+                        onChange={handleInputOnChange}
+                    />
+                    <Submit disabled={!!clientErrorMessage} />
                 </StyledFlex>
-
-                {/* this means that the form has been submitted and the users hasn't yet interacted with the form*/}
-                {showStatus ? (
+                {errorMessage ? (
                     <StyledFlex
                         data-testid='status-messages'
                         vAlign='middle'
@@ -67,12 +66,7 @@ export function UserNameInput() {
                         direction='vertical'
                         gap={4}
                         className={css({ textAlign: 'center' })}>
-                        {state.status === 'error' ? (
-                            <span data-testid='status-message-error'> ⚠️ {state.message}</span>
-                        ) : null}
-                        {state.status === 'success' ? (
-                            <span data-testid='status-message-success'>✅ {state.message}</span>
-                        ) : null}
+                        <span data-testid='status-message-error'> ⚠️ {errorMessage}</span>
                     </StyledFlex>
                 ) : null}
             </StyledFlex>

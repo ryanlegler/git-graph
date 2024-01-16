@@ -1,13 +1,8 @@
 import { z } from 'zod';
 
-export const userNameSchema = z.object({
-    userName: z.string().min(1, 'at least 1 character'),
-});
+export const userNameSchema = z
+    .string()
+    .min(1, 'Please enter at least 1 character')
+    .regex(/^\S+$/, 'White space is not allowed');
 
 export type UserNameSchema = z.infer<typeof userNameSchema>;
-
-export type UserNameInputState = {
-    status: 'idle' | 'success' | 'error';
-    message: string;
-    data: string;
-};

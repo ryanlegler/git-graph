@@ -20,9 +20,6 @@ export default async function UserPage({ params: { username } }: Props) {
 
     return (
         <StyledFlex direction='vertical' hAlign='center'>
-            {years.map((year) => (
-                <span key={year}>{year}</span>
-            ))}
             <GraphList years={years} username={username} avatarUrl={profile.avatar_url} />
         </StyledFlex>
     );

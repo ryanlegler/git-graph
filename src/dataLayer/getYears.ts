@@ -2,7 +2,7 @@ export async function getYears(username: string) {
     const data = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`);
     const contributions = await data.json();
 
-    const years =
+    const years: number[] =
         contributions?.total &&
         Object.keys(contributions.total)
             .map((year) => Number(year))

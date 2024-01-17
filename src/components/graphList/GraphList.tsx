@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import { StyledButton } from '../userNameInput/styledComponents';
 import { Switch, SwitchProps } from '@/components/ui/switch';
 import { useState } from 'react';
+import { Box, Grid } from 'styled-system/jsx';
 
 type GraphListProps = {
     years: number[];
@@ -21,47 +22,53 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
     return (
         <StyledFlex direction='vertical' gap={6}>
             <StyledFlex direction='vertical' gap={1} bg='red'>
-                {years.map((year) => (
-                    <div key={year}>
-                        <Switch
-                            defaultChecked
-                            checked={renderYears.includes(year)}
-                            onCheckedChange={(e) => {
-                                setRenderYears((prev) => {
-                                    const findIndex = prev.indexOf(year);
-                                    console.log('checked', year, findIndex);
+                <Grid gridTemplateColumns={[1, 2, 4]}>
+                    {years.map((year) => {
+                        const isDisabled = renderYears.includes(year) && renderYears.length === 1;
+                        return (
+                            <Box key={year} display={'flex'} flexDir={'row'} gap={1}>
+                                <Switch
+                                    defaultChecked
+                                    disabled={isDisabled}
+                                    checked={renderYears.includes(year)}
+                                    onCheckedChange={(e) => {
+                                        setRenderYears((prev) => {
+                                            if (prev.length === 1) {
+                                                console.log('🚨 1 Year Required');
+                                            }
 
-                                    // Copy state so we can modify
-                                    const clonePrev = [...renderYears];
+                                            const findIndex = prev.indexOf(year);
+                                            console.log('checked', year, findIndex);
 
-                                    // If year not included
-                                    if (findIndex === -1) {
-                                        // Add it
-                                        clonePrev.push(year);
-                                        // Sort
-                                        clonePrev.sort((a, b) => b - a);
-                                        return clonePrev;
-                                    }
-                                    // Otherwise
-                                    else {
-                                        // Remove
-                                        clonePrev.splice(findIndex, 1);
-                                        console.log('clonePrev', clonePrev, prev);
-                                        // and return
-                                        return clonePrev;
-                                    }
-                                });
-                            }}>
-                            {year}
-                        </Switch>
-                    </div>
-                ))}
-            </StyledFlex>
-            <span>the render years</span>
-            <StyledFlex direction='horizontal' gap={3} p={3} bg='blue.8'>
-                {renderYears.map((year) => (
-                    <span key={year}>{year}</span>
-                ))}
+                                            // Copy state so we can modify
+                                            const clonePrev = [...renderYears];
+
+                                            // If year not included
+                                            if (findIndex === -1) {
+                                                // Add it
+                                                clonePrev.push(year);
+                                                // Sort
+                                                clonePrev.sort((a, b) => b - a);
+                                                return clonePrev;
+                                            }
+                                            // Otherwise
+                                            else {
+                                                // Remove
+                                                clonePrev.splice(findIndex, 1);
+                                                console.log('clonePrev', clonePrev, prev);
+                                                // and return
+                                                return clonePrev;
+                                            }
+                                        });
+                                    }}>
+                                    {year}
+                                </Switch>
+                                {/* I'm done fighting panda/park ui */}
+                                {isDisabled && <span>this is disabled</span>}
+                            </Box>
+                        );
+                    })}
+                </Grid>
             </StyledFlex>
             <Link href='/'>
                 <StyledButton flavor='secondary'>Back</StyledButton>
@@ -88,7 +95,7 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                     {username}
                 </Link>
             </StyledFlex>
-            {years.map((year) => (
+            {renderYears.map((year) => (
                 <div key={year}>
                     <h3
                         className={css({

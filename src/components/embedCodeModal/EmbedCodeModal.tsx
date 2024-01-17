@@ -6,15 +6,15 @@ import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
 import { useParams } from 'next/navigation';
 
-export function EmbedCodeModal({ isThing }: { isThing: boolean }) {
+export function EmbedCodeModal({ hideColorLegend }: { hideColorLegend: boolean }) {
     const { username } = useParams<{ username: string }>();
 
     const embedString = useMemo(
         () =>
-            `<iframe height="800px" width="100%" src="https://git-graph.vercel.app/embed/${username}?thing=${Boolean(
-                isThing
+            `<iframe height="800px" width="100%" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${Boolean(
+                hideColorLegend
             )}"></iframe>`,
-        [isThing, username]
+        [hideColorLegend, username]
     );
 
     return (

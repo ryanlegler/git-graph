@@ -6,7 +6,7 @@ export default async function IframeTest() {
             <iframe
                 height='800px'
                 width='100%'
-                src='https://git-graph.vercel.app/embed/ryanlegler'></iframe>
+                src='https://git-graph.vercel.app/embed/ryanlegler?hideColorLegend=true'></iframe>
         </StyledFlex>
     );
 }

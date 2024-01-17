@@ -7,10 +7,10 @@ import { StyledFlex } from '@/components/ui/flex';
 import { useCallback, useState } from 'react';
 
 export function Controls() {
-    const [isThing, setThing] = useState(false);
+    const [hideColorLegend, setHideColorLegend] = useState(false);
 
     const handleSwitch = useCallback(() => {
-        setThing((prev) => !prev);
+        setHideColorLegend((prev) => !prev);
     }, []);
     return (
         <StyledFlex direction='horizontal' hAlign='between' py={4} w='full' maxW={850}>
@@ -19,11 +19,11 @@ export function Controls() {
             </Link>
 
             <StyledFlex gap={3}>
-                <Switch checked={isThing} onChange={handleSwitch}>
-                    thing
+                <Switch checked={hideColorLegend} onChange={handleSwitch}>
+                    Legend
                 </Switch>
 
-                <EmbedCodeModal isThing={isThing} />
+                <EmbedCodeModal hideColorLegend={hideColorLegend} />
             </StyledFlex>
         </StyledFlex>
     );

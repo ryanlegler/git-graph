@@ -5,17 +5,18 @@ import { css } from 'styled-system/css';
 
 import Link from 'next/link';
 import { StyledFlex } from '@components/ui/flex';
+import { ComponentProps } from 'react';
 
 export function GraphList({
     years,
     username,
     avatarUrl,
+    hideColorLegend,
 }: {
     years: number[];
     username: string;
     avatarUrl: string;
-}) {
-    console.log('avatarUrl', avatarUrl);
+} & ComponentProps<typeof GitHubCalendar>) {
     return (
         <StyledFlex direction='vertical' gap={6}>
             <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
@@ -51,7 +52,11 @@ export function GraphList({
                         })}>
                         {year}
                     </h3>
-                    <GitHubCalendar username={username} year={year} />
+                    <GitHubCalendar
+                        username={username}
+                        year={year}
+                        hideColorLegend={hideColorLegend}
+                    />
                 </div>
             ))}
         </StyledFlex>

@@ -1,3 +1,4 @@
+import { buttonRecipe } from '@/components/ui/button/recipie';
 import { defineConfig } from '@pandacss/dev';
 
 export default defineConfig({
@@ -10,18 +11,9 @@ export default defineConfig({
     exclude: [],
     theme: {
         extend: {
-            // should be able to extend the ark recipes and add new variants - have't gotten it to work though
-            // recipes: {
-            //     button: {
-            //         variants: {
-            //             solid: {
-            //                 base: {
-            //                     bg: '#bada55',
-            //                 },
-            //             },
-            //         },
-            //     },
-            // },
+            recipes: {
+                button: buttonRecipe,
+            },
             tokens: {
                 colors: {
                     ['github.100']: { value: '#161B22' },

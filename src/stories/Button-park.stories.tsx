@@ -74,6 +74,7 @@ export const AllTheVariants: Story = {
             <Button variant='link'>link</Button>
             <Button variant='ghost'>ghost</Button>
             <Button variant='outline'>outline</Button>
+            <Button variant='secondary'>secondary</Button>
         </StyledFlex>
     ),
 };

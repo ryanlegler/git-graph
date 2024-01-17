@@ -5,7 +5,6 @@ import { css } from 'styled-system/css';
 import Link from 'next/link';
 import { StyledFlex } from '../ui/flex';
 import { Button } from '../ui/button';
-import { StyledButton } from '../userNameInput/styledComponents';
 
 export function GraphList({
     years,
@@ -19,7 +18,7 @@ export function GraphList({
     return (
         <StyledFlex direction='vertical' gap={6}>
             <Link href='/'>
-                <StyledButton flavor='secondary'>Back</StyledButton>
+                <Button variant='secondary'>Back</Button>
             </Link>
             <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}

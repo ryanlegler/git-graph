@@ -55,29 +55,6 @@ export const ExtractedCSSStyles: Story = {
 };
 
 // method 3
-const flexRecipe = cva({
-    base: {
-        bg: 'github.400',
-        px: 3,
-        py: 2,
-        borderRadius: 'md',
-        color: 'white',
-        cursor: 'pointer',
-        _hover: {
-            bg: 'github.100',
-        },
-        _focus: {
-            bg: 'github.100',
-        },
-    },
-});
-const StyledButton = styled('div', flexRecipe);
-
-export const StyledCVA: Story = {
-    render: () => <StyledButton>Click Me</StyledButton>,
-};
-
-// method 4
 const flexRecipeCVA = cva({
     base: {
         bg: 'github.400',

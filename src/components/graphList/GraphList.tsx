@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import GitHubCalendar from 'react-github-calendar';
 import { css } from 'styled-system/css';
 
 import Link from 'next/link';
-import { StyledFlex } from '../ui/flex';
-import { Button } from '../ui/button';
+import { StyledFlex } from '@components/ui/flex';
 
 export function GraphList({
     years,
@@ -15,23 +15,22 @@ export function GraphList({
     username: string;
     avatarUrl: string;
 }) {
+    console.log('avatarUrl', avatarUrl);
     return (
         <StyledFlex direction='vertical' gap={6}>
-            <Link href='/'>
-                <Button variant='secondary'>Back</Button>
-            </Link>
             <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={avatarUrl}
-                    alt={username}
-                    className={css({
-                        height: '50px',
-                        width: '50px',
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                    })}
-                />
+                {avatarUrl ? (
+                    <img
+                        src={avatarUrl}
+                        alt={username}
+                        className={css({
+                            height: '50px',
+                            width: '50px',
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                        })}
+                    />
+                ) : null}
                 <Link
                     target='_blank'
                     href={`https://github.com/${username}`}

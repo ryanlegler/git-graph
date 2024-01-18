@@ -18,6 +18,12 @@ type GraphListProps = {
 
 export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
     const [renderYears, setRenderYears] = useState(years);
+    // All Controls
+    const [showWeekdayLabels, setShowWeekdayLabels] = useState(false);
+
+    const allConfigProps = {
+        showWeekdayLabels,
+    };
 
     return (
         <StyledFlex direction='vertical' gap={6}>
@@ -70,6 +76,42 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                     })}
                 </Grid>
             </StyledFlex>
+            <div>
+                <h2
+                    className={css({
+                        fontSize: 30,
+                        fontWeight: 700,
+                    })}>
+                    Controls
+                </h2>
+                <Grid gridTemplateColumns={[1, 2]}>
+                    {/* Props
+                username
+                year
+                blockMargin
+                blockRadius
+                blockSize
+                colorScheme	'light' | 'dark'		Use a specific color scheme instead of the system one.
+                fontSize	number	14	Font size for text in pixels.
+                hideColorLegend
+                hideMonthLabels
+                hideTotalCount
+                loading
+                showWeekdayLabels
+                weekStart 
+                */}
+
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Switch
+                            checked={showWeekdayLabels}
+                            onCheckedChange={(e) => {
+                                setShowWeekdayLabels((prev) => !prev);
+                            }}>
+                            Show Weekday Labels
+                        </Switch>
+                    </Box>
+                </Grid>
+            </div>
             <Link href='/'>
                 <StyledButton flavor='secondary'>Back</StyledButton>
             </Link>
@@ -104,7 +146,14 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                         })}>
                         {year}
                     </h3>
-                    <GitHubCalendar username={username} year={year} />
+                    <GitHubCalendar
+                        username={username}
+                        year={year}
+                        {...allConfigProps}
+                        // blockMargin={2}
+                        // blockRadius={2}
+                        // blockSize={12}
+                    />
                 </div>
             ))}
         </StyledFlex>

@@ -6,17 +6,24 @@ import { css } from 'styled-system/css';
 import Link from 'next/link';
 import { StyledFlex } from '@components/ui/flex';
 import { ComponentProps } from 'react';
+import { hideColorLegendAtom } from '@/atoms';
+import { useAtom } from 'jotai';
 
 export function GraphList({
     years,
     username,
     avatarUrl,
-    hideColorLegend,
+    hideColorLegend: hideColorLegendStatic, // this static value is picked up by params in the /user routed as passed as props
 }: {
     years: number[];
     username: string;
     avatarUrl: string;
 } & ComponentProps<typeof GitHubCalendar>) {
+    const [hideColorLegend] = useAtom(hideColorLegendAtom);
+
+    // we use the static value if it's passed in, otherwise we use the dynamic value from the atom
+    const resolvedHideColorLegend = hideColorLegendStatic || hideColorLegend;
+
     return (
         <StyledFlex direction='vertical' gap={6}>
             <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
@@ -55,7 +62,7 @@ export function GraphList({
                     <GitHubCalendar
                         username={username}
                         year={year}
-                        hideColorLegend={hideColorLegend}
+                        hideColorLegend={resolvedHideColorLegend}
                     />
                 </div>
             ))}

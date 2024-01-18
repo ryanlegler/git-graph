@@ -5,9 +5,13 @@ import { useMemo } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
 import { useParams } from 'next/navigation';
+import { hideColorLegendAtom } from '@/atoms';
+import { useAtom } from 'jotai';
 
-export function EmbedCodeModal({ hideColorLegend }: { hideColorLegend: boolean }) {
+export function EmbedCodeModal() {
     const { username } = useParams<{ username: string }>();
+
+    const [hideColorLegend] = useAtom(hideColorLegendAtom);
 
     const embedString = useMemo(
         () =>

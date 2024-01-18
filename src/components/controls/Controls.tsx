@@ -24,7 +24,7 @@ export function Controls() {
                     Legend
                 </Switch>
 
-                <EmbedCodeModal hideColorLegend={hideColorLegend} />
+                <EmbedCodeModal />
             </StyledFlex>
         </StyledFlex>
     );

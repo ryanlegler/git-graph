@@ -6,7 +6,7 @@ const inputStyles = cva({
         px: '3',
         py: '2',
         bg: 'github.100',
-        color: 'gray.1',
+        color: 'white',
         borderRadius: 'md',
         _placeholder: { color: 'gray.9' },
         cursor: 'pointer',

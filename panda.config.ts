@@ -6,7 +6,9 @@ export default defineConfig({
     presets: ['@pandacss/preset-base', '@park-ui/panda-preset'],
     include: ['./src/**/*.{js,jsx,ts,tsx}'],
     jsxFramework: 'react', // allows for jsx style props -  https://panda-css.com/docs/guides/dynamic-styling#jsx-style-props
-
+    conditions: {
+        dark: '[data-color-mode=dark] &',
+    },
     // Files to exclude
     exclude: [],
     theme: {

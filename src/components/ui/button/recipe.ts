@@ -8,10 +8,10 @@ export const buttonRecipe = defineRecipe({
             // this overrides the solid variant
             solid: {
                 bg: 'github.400',
-                color: 'gray.3',
+                color: 'white',
                 transition: 'background 300ms, color 300ms',
-                _hover: { bg: 'github.500', color: 'gray.3' },
-                _focus: { bg: 'github.500', color: 'gray.3' },
+                _hover: { bg: 'github.500' },
+                _focus: { bg: 'github.500' },
                 _disabled: {
                     color: 'gray.9',
                     bg: 'github.100',

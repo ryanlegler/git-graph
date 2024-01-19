@@ -31,18 +31,14 @@ export function EmbedCodeModal() {
                 <Dialog.Content maxW='1/3'>
                     <Stack gap='8' p='6'>
                         <Stack gap='4'>
-                            <Dialog.Title color='black'>Embed Code</Dialog.Title>
-                            <Dialog.Description
-                                p={3}
-                                bg='lightgrey'
-                                borderRadius='l3'
-                                color='black'>
+                            <Dialog.Title>Embed Code</Dialog.Title>
+                            <Dialog.Description p={3} bg='background' borderRadius='l3'>
                                 <code className={css({ bg: 'transparent' })}>{embedString}</code>
                             </Dialog.Description>
                         </Stack>
                     </Stack>
                     <Dialog.CloseTrigger asChild position='absolute' top='2' right='2'>
-                        <Button variant='outline'>❌</Button>
+                        <Button variant='ghost'>❌</Button>
                     </Dialog.CloseTrigger>
                 </Dialog.Content>
             </Dialog.Positioner>

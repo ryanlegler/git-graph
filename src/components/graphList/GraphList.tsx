@@ -15,14 +15,37 @@ type GraphListProps = {
     username: string;
     avatarUrl: string;
 };
+{
+    /* Props
+    blockMargin
+    blockRadius
+    blockSize
+    colorScheme	'light' | 'dark'		Use a specific color scheme instead of the system one.
+    fontSize	number	14	Font size for text in pixels.
+    loading
+    showWeekdayLabels
+    weekStart 
+    */
+}
+
+// add all boolean controls
+// add all slider props
 
 export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
     const [renderYears, setRenderYears] = useState(years);
     // All Controls
     const [showWeekdayLabels, setShowWeekdayLabels] = useState(false);
+    const [useLightMode, setUseLightMode] = useState('dark');
+    const [hideColorLegend, setHideColorLegend] = useState(false);
+    const [hideMonthLabels, setHideMonthLabels] = useState(false);
+    const [hideTotalCount, setHideTotalCount] = useState(false);
 
     const allConfigProps = {
         showWeekdayLabels,
+        colorScheme: useLightMode,
+        hideColorLegend,
+        hideMonthLabels,
+        hideTotalCount,
     };
 
     return (
@@ -77,30 +100,8 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                 </Grid>
             </StyledFlex>
             <div>
-                <h2
-                    className={css({
-                        fontSize: 30,
-                        fontWeight: 700,
-                    })}>
-                    Controls
-                </h2>
+                <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
                 <Grid gridTemplateColumns={[1, 2]}>
-                    {/* Props
-                username
-                year
-                blockMargin
-                blockRadius
-                blockSize
-                colorScheme	'light' | 'dark'		Use a specific color scheme instead of the system one.
-                fontSize	number	14	Font size for text in pixels.
-                hideColorLegend
-                hideMonthLabels
-                hideTotalCount
-                loading
-                showWeekdayLabels
-                weekStart 
-                */}
-
                     <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
                             checked={showWeekdayLabels}
@@ -108,6 +109,42 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                                 setShowWeekdayLabels((prev) => !prev);
                             }}>
                             Show Weekday Labels
+                        </Switch>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Switch
+                            checked={useLightMode === 'dark' ? false : true}
+                            onCheckedChange={(e) => {
+                                setUseLightMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+                            }}>
+                            Light Mode
+                        </Switch>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Switch
+                            checked={hideColorLegend}
+                            onCheckedChange={(e) => {
+                                setHideColorLegend((prev) => !prev);
+                            }}>
+                            Hide Color Legend
+                        </Switch>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Switch
+                            checked={hideMonthLabels}
+                            onCheckedChange={(e) => {
+                                setHideMonthLabels((prev) => !prev);
+                            }}>
+                            Hide Month Labels
+                        </Switch>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Switch
+                            checked={hideTotalCount}
+                            onCheckedChange={(e) => {
+                                setHideTotalCount((prev) => !prev);
+                            }}>
+                            Hide Total Count
                         </Switch>
                     </Box>
                 </Grid>

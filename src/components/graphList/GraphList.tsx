@@ -7,6 +7,7 @@ import { StyledFlex } from '../ui/flex';
 import { Button } from '../ui/button';
 import { StyledButton } from '../userNameInput/styledComponents';
 import { Switch, SwitchProps } from '@/components/ui/switch';
+import { Slider, type SliderProps } from '@/components/ui/slider';
 import { useState } from 'react';
 import { Box, Grid } from 'styled-system/jsx';
 
@@ -33,19 +34,36 @@ type GraphListProps = {
 
 export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
     const [renderYears, setRenderYears] = useState(years);
-    // All Controls
+
+    // Boolean Controls
     const [showWeekdayLabels, setShowWeekdayLabels] = useState(false);
-    const [useLightMode, setUseLightMode] = useState('dark');
+    const [useLightMode, setUseLightMode] = useState<'light' | 'dark'>('dark');
     const [hideColorLegend, setHideColorLegend] = useState(false);
     const [hideMonthLabels, setHideMonthLabels] = useState(false);
     const [hideTotalCount, setHideTotalCount] = useState(false);
 
+    // Slider Controls
+    const [blockMargin, setBlockMargin] = useState(4);
+    const [blockRadius, setBlockRadius] = useState(2);
+    const [blockSize, setBlockSize] = useState(12);
+    const [fontSize, setFontSize] = useState(14); // 32
+    const [maxLevel, setMaxLevel] = useState(4); // Seems to not be updating
+    const [weekStart, setWeekStart] = useState(0);
+
+    // All controls
     const allConfigProps = {
         showWeekdayLabels,
         colorScheme: useLightMode,
         hideColorLegend,
         hideMonthLabels,
         hideTotalCount,
+        blockMargin,
+        blockRadius,
+        blockSize,
+        fontSize,
+        maxLevel,
+        // TS unhappy with this right now; control does seem to work
+        // weekStart,
     };
 
     return (
@@ -101,6 +119,7 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
             </StyledFlex>
             <div>
                 <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
+                {/* Booleans */}
                 <Grid gridTemplateColumns={[1, 2]}>
                     <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
@@ -148,6 +167,118 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                         </Switch>
                     </Box>
                 </Grid>
+                <Grid gridTemplateColumns={[1, 2]}>
+                    <Box display={'flex'} flexDir={'row'} gap={1} py='2'>
+                        <Slider
+                            min={2}
+                            max={20}
+                            step={2}
+                            value={[blockMargin]}
+                            onValueChange={(details) => console.log(details.value)}
+                            onValueChangeEnd={(details) => {
+                                console.log(details.value);
+                                setBlockMargin(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Block Margin
+                            </span>
+                        </Slider>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Slider
+                            min={2}
+                            max={20}
+                            step={2}
+                            value={[blockRadius]}
+                            onValueChangeEnd={(details) => {
+                                setBlockRadius(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Block Radius
+                            </span>
+                        </Slider>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Slider
+                            min={2}
+                            max={20}
+                            step={2}
+                            value={[blockSize]}
+                            onValueChangeEnd={(details) => {
+                                setBlockSize(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Block Size
+                            </span>
+                        </Slider>
+                    </Box>
+                    fontSize, maxLevel, weekStart,
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Slider
+                            min={6}
+                            max={32}
+                            step={2}
+                            value={[fontSize]}
+                            onValueChangeEnd={(details) => {
+                                setFontSize(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Font Size
+                            </span>
+                        </Slider>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Slider
+                            min={1}
+                            max={9}
+                            value={[maxLevel]}
+                            onValueChangeEnd={(details) => {
+                                setMaxLevel(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Max Level
+                            </span>
+                        </Slider>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                        <Slider
+                            min={0}
+                            max={6}
+                            value={[weekStart]}
+                            onValueChangeEnd={(details) => {
+                                setWeekStart(details.value[0]);
+                            }}>
+                            <span
+                                className={css({
+                                    fontSize: 'md',
+                                    color: 'white',
+                                })}>
+                                Week Start {weekStart}
+                            </span>
+                        </Slider>
+                    </Box>
+                    <Box display={'flex'} flexDir={'row'} gap={1}></Box>
+                </Grid>
             </div>
             <Link href='/'>
                 <StyledButton flavor='secondary'>Back</StyledButton>
@@ -183,14 +314,7 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                         })}>
                         {year}
                     </h3>
-                    <GitHubCalendar
-                        username={username}
-                        year={year}
-                        {...allConfigProps}
-                        // blockMargin={2}
-                        // blockRadius={2}
-                        // blockSize={12}
-                    />
+                    <GitHubCalendar username={username} year={year} {...allConfigProps} />
                 </div>
             ))}
         </StyledFlex>

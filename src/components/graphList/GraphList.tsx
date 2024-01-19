@@ -1,28 +1,39 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import GitHubCalendar from 'react-github-calendar';
+import ActivityCalendar, { Props as ActivityCalendarProps } from 'react-activity-calendar';
 import { css } from 'styled-system/css';
 
 import Link from 'next/link';
 import { StyledFlex } from '@components/ui/flex';
-import { ComponentProps } from 'react';
+import { useMemo } from 'react';
 import { hideColorLegendAtom } from '@/atoms';
 import { useAtom } from 'jotai';
+import { Contributions } from '@/dataLayer/getContributions';
 
 export function GraphList({
-    years,
     username,
     avatarUrl,
+    contributions,
     hideColorLegend: hideColorLegendStatic, // this static value is picked up by params in the /user routed as passed as props
 }: {
-    years: number[];
+    contributions: Contributions;
     username: string;
     avatarUrl: string;
-} & ComponentProps<typeof GitHubCalendar>) {
+} & Omit<ActivityCalendarProps, 'data'>) {
     const [hideColorLegend] = useAtom(hideColorLegendAtom);
 
     // we use the static value if it's passed in, otherwise we use the dynamic value from the atom
     const resolvedHideColorLegend = hideColorLegendStatic || hideColorLegend;
+
+    const years = useMemo(
+        () =>
+            Object.keys(contributions)
+                .map((year) => Number(year))
+                .reverse(),
+        [contributions]
+    );
+
+    const colorScale = ['#00429d', '#1f58a6', '#376ead', '#ffa59e', '#dd4c65'];
 
     return (
         <StyledFlex direction='vertical' gap={6}>
@@ -59,9 +70,9 @@ export function GraphList({
                         })}>
                         {year}
                     </h3>
-                    <GitHubCalendar
-                        username={username}
-                        year={year}
+                    <ActivityCalendar
+                        theme={{ light: colorScale, dark: colorScale }}
+                        data={contributions[year]}
                         hideColorLegend={resolvedHideColorLegend}
                     />
                 </div>

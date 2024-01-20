@@ -1,6 +1,5 @@
 'use client';
 import GitHubCalendar, { Props as GitHubCalendarProps } from 'react-github-calendar';
-import { Props as ActivityCalendarProps } from 'react-activity-calendar';
 import { css } from 'styled-system/css';
 
 import Link from 'next/link';
@@ -11,6 +10,43 @@ import { Switch, SwitchProps } from '@/components/ui/switch';
 import { Slider, type SliderProps } from '@/components/ui/slider';
 import { ReactNode, useState } from 'react';
 import { Box, Flex, Grid } from 'styled-system/jsx';
+
+type PageHeaderBarProps = {
+    username: string;
+    children?: ReactNode;
+};
+
+const PageHeaderBar = ({ username, children, ...props }: PageHeaderBarProps) => {
+    return (
+        <Flex alignItems='center' justifyContent='space-between' py='3'>
+            <Flex gap={2} justifyContent='flex-start'>
+                <Link href='/' className={css(linkStyles)}>
+                    home
+                </Link>
+                <span className={css(linkStyles)}>/</span>
+                <Link
+                    target='_blank'
+                    href={`https://github.com/${username}`}
+                    className={css(linkStyles)}>
+                    {username}
+                </Link>
+            </Flex>
+            {children}
+        </Flex>
+    );
+};
+
+const SwitchLabel = ({ children }: { children: string | ReactNode }) => (
+    <span
+        className={css({
+            fontSize: 'md',
+            color: 'white',
+        })}>
+        {children}
+    </span>
+);
+
+const linkStyles = { lineHeight: 1, fontSize: 24, fontWeight: 700 };
 
 type GraphListWrapperProps = {
     years: number[];
@@ -35,16 +71,6 @@ type ActivityCalendarConfigProps = {
     // weekStart?: WeekDay;
 };
 
-const SwitchLabel = ({ children }: { children: string | ReactNode }) => (
-    <span
-        className={css({
-            fontSize: 'md',
-            color: 'white',
-        })}>
-        {children}
-    </span>
-);
-
 // Not sure what to call;
 // this allows us to manage page level state
 // Would put in the page, but app routing
@@ -52,6 +78,9 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
     const { years = [], username, avatarUrl } = props;
 
     const [renderYears, setRenderYears] = useState(years);
+
+    // Visibility
+    const [showControls, setShowControls] = useState(true);
 
     // Boolean Controls
     const [showWeekdayLabels, setShowWeekdayLabels] = useState(false);
@@ -86,6 +115,24 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
 
     return (
         <StyledFlex direction='vertical' gap={6}>
+            <PageHeaderBar username={username}>
+                <Flex gap='2'>
+                    <StyledButton
+                        flavor='secondary'
+                        onClick={() => {
+                            setShowControls((prev) => !prev);
+                        }}>
+                        Controls
+                    </StyledButton>
+                    <StyledButton
+                        flavor='outline'
+                        onClick={() => {
+                            alert('Launch the embed overlay');
+                        }}>
+                        Embed
+                    </StyledButton>
+                </Flex>
+            </PageHeaderBar>
             <StyledFlex direction='vertical' gap={1} bg='red'>
                 <Grid gridTemplateColumns={[1, 2, 4]}>
                     {years.map((year) => {
@@ -135,116 +182,117 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
                     })}
                 </Grid>
             </StyledFlex>
-            <div>hey</div>
-            <div>
-                <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
-                <Grid gridTemplateColumns={[1, 2]}>
-                    {/* Booleans */}
-                    <Box display={'flex'} flexDir='column' gap={2}>
-                        <Switch
-                            checked={showWeekdayLabels}
-                            onCheckedChange={(e) => {
-                                setShowWeekdayLabels((prev) => !prev);
-                            }}>
-                            Show Weekday Labels
-                        </Switch>
-                        <Switch
-                            checked={useLightMode === 'dark' ? false : true}
-                            onCheckedChange={(e) => {
-                                setUseLightMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-                            }}>
-                            Light Mode
-                        </Switch>
-                        <Switch
-                            checked={hideColorLegend}
-                            onCheckedChange={(e) => {
-                                setHideColorLegend((prev) => !prev);
-                            }}>
-                            Hide Color Legend
-                        </Switch>
-                        <Switch
-                            checked={hideMonthLabels}
-                            onCheckedChange={(e) => {
-                                setHideMonthLabels((prev) => !prev);
-                            }}>
-                            Hide Month Labels
-                        </Switch>
-                        <Switch
-                            checked={hideTotalCount}
-                            onCheckedChange={(e) => {
-                                setHideTotalCount((prev) => !prev);
-                            }}>
-                            Hide Total Count
-                        </Switch>
-                    </Box>
-                    {/* Sliders */}
-                    <Box display={'flex'} flexDir='column' gap={4}>
-                        <Slider
-                            min={2}
-                            max={20}
-                            step={2}
-                            value={[blockMargin]}
-                            onValueChange={(details) => console.log(details.value)}
-                            onValueChangeEnd={(details) => {
-                                console.log(details.value);
-                                setBlockMargin(details.value[0]);
-                            }}>
-                            <SwitchLabel>Block Margin</SwitchLabel>
-                        </Slider>
-                        <Slider
-                            min={2}
-                            max={20}
-                            step={2}
-                            value={[blockRadius]}
-                            onValueChangeEnd={(details) => {
-                                setBlockRadius(details.value[0]);
-                            }}>
-                            <SwitchLabel>Block Radius</SwitchLabel>
-                        </Slider>
-                        <Slider
-                            min={2}
-                            max={20}
-                            step={2}
-                            value={[blockSize]}
-                            onValueChangeEnd={(details) => {
-                                setBlockSize(details.value[0]);
-                            }}>
-                            <SwitchLabel>Block Size</SwitchLabel>
-                        </Slider>
+            {showControls && (
+                <Box>
+                    <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
+                    <Grid gridTemplateColumns={[1, 2]}>
+                        {/* Booleans */}
+                        <Box display={'flex'} flexDir='column' gap={2}>
+                            <Switch
+                                checked={showWeekdayLabels}
+                                onCheckedChange={(e) => {
+                                    setShowWeekdayLabels((prev) => !prev);
+                                }}>
+                                Show Weekday Labels
+                            </Switch>
+                            <Switch
+                                checked={useLightMode === 'dark' ? false : true}
+                                onCheckedChange={(e) => {
+                                    setUseLightMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+                                }}>
+                                Light Mode
+                            </Switch>
+                            <Switch
+                                checked={hideColorLegend}
+                                onCheckedChange={(e) => {
+                                    setHideColorLegend((prev) => !prev);
+                                }}>
+                                Hide Color Legend
+                            </Switch>
+                            <Switch
+                                checked={hideMonthLabels}
+                                onCheckedChange={(e) => {
+                                    setHideMonthLabels((prev) => !prev);
+                                }}>
+                                Hide Month Labels
+                            </Switch>
+                            <Switch
+                                checked={hideTotalCount}
+                                onCheckedChange={(e) => {
+                                    setHideTotalCount((prev) => !prev);
+                                }}>
+                                Hide Total Count
+                            </Switch>
+                        </Box>
+                        {/* Sliders */}
+                        <Box display={'flex'} flexDir='column' gap={4}>
+                            <Slider
+                                min={2}
+                                max={20}
+                                step={2}
+                                value={[blockMargin]}
+                                onValueChange={(details) => console.log(details.value)}
+                                onValueChangeEnd={(details) => {
+                                    console.log(details.value);
+                                    setBlockMargin(details.value[0]);
+                                }}>
+                                <SwitchLabel>Block Margin</SwitchLabel>
+                            </Slider>
+                            <Slider
+                                min={2}
+                                max={20}
+                                step={2}
+                                value={[blockRadius]}
+                                onValueChangeEnd={(details) => {
+                                    setBlockRadius(details.value[0]);
+                                }}>
+                                <SwitchLabel>Block Radius</SwitchLabel>
+                            </Slider>
+                            <Slider
+                                min={2}
+                                max={20}
+                                step={2}
+                                value={[blockSize]}
+                                onValueChangeEnd={(details) => {
+                                    setBlockSize(details.value[0]);
+                                }}>
+                                <SwitchLabel>Block Size</SwitchLabel>
+                            </Slider>
 
-                        <Slider
-                            min={6}
-                            max={32}
-                            step={2}
-                            value={[fontSize]}
-                            onValueChangeEnd={(details) => {
-                                setFontSize(details.value[0]);
-                            }}>
-                            <SwitchLabel>Font Size</SwitchLabel>
-                        </Slider>
+                            <Slider
+                                min={6}
+                                max={32}
+                                step={2}
+                                value={[fontSize]}
+                                onValueChangeEnd={(details) => {
+                                    setFontSize(details.value[0]);
+                                }}>
+                                <SwitchLabel>Font Size</SwitchLabel>
+                            </Slider>
 
-                        <Slider
-                            min={1}
-                            max={9}
-                            value={[maxLevel]}
-                            onValueChangeEnd={(details) => {
-                                setMaxLevel(details.value[0]);
-                            }}>
-                            <SwitchLabel>Max Level</SwitchLabel>
-                        </Slider>
-                        <Slider
-                            min={0}
-                            max={6}
-                            value={[weekStart]}
-                            onValueChangeEnd={(details) => {
-                                setWeekStart(details.value[0]);
-                            }}>
-                            <SwitchLabel>Week Start {weekStart.toString()}</SwitchLabel>
-                        </Slider>
-                    </Box>
-                </Grid>
-            </div>
-            <div>before graphlist</div>
+                            <Slider
+                                min={1}
+                                max={9}
+                                value={[maxLevel]}
+                                onValueChangeEnd={(details) => {
+                                    setMaxLevel(details.value[0]);
+                                }}>
+                                <SwitchLabel>Max Level</SwitchLabel>
+                            </Slider>
+                            <Slider
+                                min={0}
+                                max={6}
+                                value={[weekStart]}
+                                onValueChangeEnd={(details) => {
+                                    setWeekStart(details.value[0]);
+                                }}>
+                                <SwitchLabel>Week Start {weekStart.toString()}</SwitchLabel>
+                            </Slider>
+                        </Box>
+                    </Grid>
+                </Box>
+            )}
+
             {/* Graphlist */}
             <GraphList {...props} {...allConfigProps} renderYears={renderYears} />
         </StyledFlex>
@@ -259,8 +307,6 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
 
 // pull out controls
 
-const linkStyles = { lineHeight: 1, fontSize: 24, fontWeight: 700 };
-
 type GraphListProps = GraphListWrapperProps &
     ActivityCalendarConfigProps & { renderYears: number[] };
 
@@ -273,26 +319,6 @@ export function GraphList({
 }: GraphListProps) {
     return (
         <StyledFlex direction='vertical' gap={6}>
-            <div>before header</div>
-            {/* header */}
-            <Flex alignItems='center' justifyContent='space-between'>
-                <Flex gap={2} justifyContent='flex-start'>
-                    <Link href='/' className={css(linkStyles)}>
-                        home
-                    </Link>
-                    <span className={css(linkStyles)}>/</span>
-                    <Link
-                        target='_blank'
-                        href={`https://github.com/${username}`}
-                        className={css(linkStyles)}>
-                        {username}
-                    </Link>
-                </Flex>
-                <Flex gap='2'>
-                    <StyledButton flavor='secondary'>Controls</StyledButton>
-                    <StyledButton flavor='outline'>Embed</StyledButton>
-                </Flex>
-            </Flex>
             {renderYears.map((year) => (
                 <div key={year}>
                     <h3

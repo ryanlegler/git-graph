@@ -10,6 +10,8 @@ import { Switch, SwitchProps } from '@/components/ui/switch';
 import { Slider, type SliderProps } from '@/components/ui/slider';
 import { ReactNode, useState } from 'react';
 import { Box, Flex, Grid } from 'styled-system/jsx';
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+import * as Select from '@/components/ui/select';
 
 type PageHeaderBarProps = {
     username: string;
@@ -71,12 +73,7 @@ type ActivityCalendarConfigProps = {
     // weekStart?: WeekDay;
 };
 
-import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
-import type { SelectProps } from '@/components/ui/select';
-import * as Select from '@/components/ui/select';
-import { ControlledParkDemo } from './ControlledParkDemo';
-
-export const Demo = (props: { years: number[] }) => {
+export const SelectYears = (props: { years: number[] }) => {
     // type Item = { label: string; value: string; disabled?: boolean };
     // const [_, setSelectedItems] = useState<Item[]>([]);
 
@@ -113,9 +110,7 @@ export const Demo = (props: { years: number[] }) => {
             onValueChange={(e) => {
                 console.log(e.items);
                 console.log(e);
-            }}
-            // onValueChange={(e) => setSelectedItems(e.value)}
-        >
+            }}>
             <Select.Label style={{ display: 'none' }}>Framework</Select.Label>
             <Select.Control>
                 <Select.Trigger>
@@ -127,7 +122,7 @@ export const Demo = (props: { years: number[] }) => {
                 <Select.Content style={{ background: 'black' }}>
                     {/*
                      */}
-                    <Select.ItemGroup id='a'>
+                    <Select.ItemGroup id='rangeItems'>
                         {rangeItems.map((item, i) => (
                             <Select.Item key={i} item={item}>
                                 <Select.ItemText>{item.label}</Select.ItemText>
@@ -137,22 +132,19 @@ export const Demo = (props: { years: number[] }) => {
                             </Select.Item>
                         ))}
                     </Select.ItemGroup>
-                    <Box w='100' h='1px' bg='red' py='1' />
-                    {/* 
+                    <Box w='100' h='1px' py='1' px='2'>
+                        <Box h='1px' bg='lime' />
+                    </Box>
 
-                */}
-                    <Select.ItemGroup id='b'>
-                        {individualItems.map((item, i) => {
-                            console.log('item', item.id);
-                            return (
-                                <Select.Item key={i} item={item}>
-                                    <Select.ItemText>{item.label}</Select.ItemText>
-                                    <Select.ItemIndicator>
-                                        <CheckIcon />
-                                    </Select.ItemIndicator>
-                                </Select.Item>
-                            );
-                        })}
+                    <Select.ItemGroup id='individualItems'>
+                        {individualItems.map((item, i) => (
+                            <Select.Item key={i} item={item}>
+                                <Select.ItemText>{item.label}</Select.ItemText>
+                                <Select.ItemIndicator>
+                                    <CheckIcon />
+                                </Select.ItemIndicator>
+                            </Select.Item>
+                        ))}
                     </Select.ItemGroup>
                 </Select.Content>
             </Select.Positioner>
@@ -206,8 +198,11 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
         <StyledFlex direction='vertical' gap={6}>
             <PageHeaderBar username={username}>
                 <Flex gap='2'>
-                    <Demo years={years} />
-                    <ControlledParkDemo />
+                    {/* 
+                    Maybe don't delete this component, but we don't need it here
+                    <ControlledParkDemo /> 
+                    */}
+                    <SelectYears years={years} />
                     <StyledButton
                         flavor='secondary'
                         onClick={() => {
@@ -390,13 +385,13 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
     );
 }
 
-// add all boolean controls
-// add all slider props
+// add all boolean controls ✅
+// add all slider props ✅
 
-// add slider
-// pull out header
+// add switch ✅
+// pull out header ✅
 
-// pull out controls
+// pull out controls ✅
 
 type GraphListProps = GraphListWrapperProps &
     ActivityCalendarConfigProps & { renderYears: number[] };

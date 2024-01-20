@@ -71,6 +71,51 @@ type ActivityCalendarConfigProps = {
     // weekStart?: WeekDay;
 };
 
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+import type { SelectProps } from '@/components/ui/select';
+import * as Select from '@/components/ui/select';
+
+const items = [
+    { label: 'React', value: 'react' },
+    { label: 'Solid', value: 'solid' },
+    { label: 'Svelte', value: 'svelte' },
+    { label: 'Vue', value: 'vue' },
+];
+
+export const Demo = (props: SelectProps) => {
+    return (
+        <Select.Root
+            positioning={{ sameWidth: true }}
+            width='2xs'
+            {...props}
+            bg='red.5'
+            color='lime'>
+            <Select.Label style={{ display: 'none' }}>Framework</Select.Label>
+            <Select.Control>
+                <Select.Trigger>
+                    <Select.ValueText placeholder='Select a Framework' />
+                    <ChevronsUpDownIcon />
+                </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+                <Select.Content style={{ background: 'black' }}>
+                    <Select.ItemGroup id='framework'>
+                        {/* <Select.ItemGroupLabel htmlFor='framework'>Framework</Select.ItemGroupLabel> */}
+                        {items.map((item) => (
+                            <Select.Item key={item.value} item={item}>
+                                <Select.ItemText>{item.label}</Select.ItemText>
+                                <Select.ItemIndicator>
+                                    <CheckIcon />
+                                </Select.ItemIndicator>
+                            </Select.Item>
+                        ))}
+                    </Select.ItemGroup>
+                </Select.Content>
+            </Select.Positioner>
+        </Select.Root>
+    );
+};
+
 // Not sure what to call;
 // this allows us to manage page level state
 // Would put in the page, but app routing
@@ -117,6 +162,7 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
         <StyledFlex direction='vertical' gap={6}>
             <PageHeaderBar username={username}>
                 <Flex gap='2'>
+                    <Demo items={items} />
                     <StyledButton
                         flavor='secondary'
                         onClick={() => {

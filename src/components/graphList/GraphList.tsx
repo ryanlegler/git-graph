@@ -74,41 +74,85 @@ type ActivityCalendarConfigProps = {
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
 import type { SelectProps } from '@/components/ui/select';
 import * as Select from '@/components/ui/select';
+import { ControlledParkDemo } from './ControlledParkDemo';
 
-const items = [
-    { label: 'React', value: 'react' },
-    { label: 'Solid', value: 'solid' },
-    { label: 'Svelte', value: 'svelte' },
-    { label: 'Vue', value: 'vue' },
-];
+export const Demo = (props: { years: number[] }) => {
+    // type Item = { label: string; value: string; disabled?: boolean };
+    // const [_, setSelectedItems] = useState<Item[]>([]);
 
-export const Demo = (props: SelectProps) => {
+    if (!props.years) {
+        return <div />;
+    }
+
+    const rangeItems = [
+        { label: 'This Year', id: [props.years[0]], value: 'this-year' },
+        { label: 'Last Year', id: [props.years[1]], value: 'last-year' },
+        { label: 'All Years', id: props.years, value: 'all-years' },
+    ];
+
+    const individualItems = props.years.map((year) => {
+        return {
+            label: year.toString(),
+            value: [year],
+            id: `${year.toString()}`,
+        };
+    });
+
+    const mergeItems = [...rangeItems, ...individualItems];
+
+    console.log('mergeItems', mergeItems);
+
     return (
         <Select.Root
             positioning={{ sameWidth: true }}
             width='2xs'
-            {...props}
+            // uses item.value internally as a key 🚨 Dear Arc, please add this to your docs 🤦‍♂️
+            items={mergeItems}
             bg='red.5'
-            color='lime'>
+            color='lime'
+            onValueChange={(e) => {
+                console.log(e.items);
+                console.log(e);
+            }}
+            // onValueChange={(e) => setSelectedItems(e.value)}
+        >
             <Select.Label style={{ display: 'none' }}>Framework</Select.Label>
             <Select.Control>
                 <Select.Trigger>
-                    <Select.ValueText placeholder='Select a Framework' />
+                    <Select.ValueText />
                     <ChevronsUpDownIcon />
                 </Select.Trigger>
             </Select.Control>
             <Select.Positioner>
                 <Select.Content style={{ background: 'black' }}>
-                    <Select.ItemGroup id='framework'>
-                        {/* <Select.ItemGroupLabel htmlFor='framework'>Framework</Select.ItemGroupLabel> */}
-                        {items.map((item) => (
-                            <Select.Item key={item.value} item={item}>
+                    {/*
+                     */}
+                    <Select.ItemGroup id='a'>
+                        {rangeItems.map((item, i) => (
+                            <Select.Item key={i} item={item}>
                                 <Select.ItemText>{item.label}</Select.ItemText>
                                 <Select.ItemIndicator>
                                     <CheckIcon />
                                 </Select.ItemIndicator>
                             </Select.Item>
                         ))}
+                    </Select.ItemGroup>
+                    <Box w='100' h='1px' bg='red' py='1' />
+                    {/* 
+
+                */}
+                    <Select.ItemGroup id='b'>
+                        {individualItems.map((item, i) => {
+                            console.log('item', item.id);
+                            return (
+                                <Select.Item key={i} item={item}>
+                                    <Select.ItemText>{item.label}</Select.ItemText>
+                                    <Select.ItemIndicator>
+                                        <CheckIcon />
+                                    </Select.ItemIndicator>
+                                </Select.Item>
+                            );
+                        })}
                     </Select.ItemGroup>
                 </Select.Content>
             </Select.Positioner>
@@ -162,7 +206,8 @@ export function GraphListWrapper(props: GraphListWrapperProps) {
         <StyledFlex direction='vertical' gap={6}>
             <PageHeaderBar username={username}>
                 <Flex gap='2'>
-                    <Demo items={items} />
+                    <Demo years={years} />
+                    <ControlledParkDemo />
                     <StyledButton
                         flavor='secondary'
                         onClick={() => {

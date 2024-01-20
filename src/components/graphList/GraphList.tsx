@@ -1,5 +1,6 @@
 'use client';
-import GitHubCalendar from 'react-github-calendar';
+import GitHubCalendar, { Props as GitHubCalendarProps } from 'react-github-calendar';
+import { Props as ActivityCalendarProps } from 'react-activity-calendar';
 import { css } from 'styled-system/css';
 
 import Link from 'next/link';
@@ -8,31 +9,48 @@ import { Button } from '../ui/button';
 import { StyledButton } from '../userNameInput/styledComponents';
 import { Switch, SwitchProps } from '@/components/ui/switch';
 import { Slider, type SliderProps } from '@/components/ui/slider';
-import { useState } from 'react';
-import { Box, Grid } from 'styled-system/jsx';
+import { ReactNode, useState } from 'react';
+import { Box, Flex, Grid } from 'styled-system/jsx';
 
-type GraphListProps = {
+type GraphListWrapperProps = {
     years: number[];
     username: string;
     avatarUrl: string;
 };
-{
-    /* Props
-    blockMargin
-    blockRadius
-    blockSize
-    colorScheme	'light' | 'dark'		Use a specific color scheme instead of the system one.
-    fontSize	number	14	Font size for text in pixels.
-    loading
-    showWeekdayLabels
-    weekStart 
-    */
-}
 
-// add all boolean controls
-// add all slider props
+type ActivityCalendarConfigProps = {
+    blockMargin?: number;
+    blockRadius?: number;
+    blockSize?: number;
+    colorScheme?: 'light' | 'dark';
+    // eventHandlers?: EventHandlerMap;
+    fontSize?: number;
+    hideColorLegend?: boolean;
+    hideMonthLabels?: boolean;
+    hideTotalCount?: boolean;
+    maxLevel?: number;
+    // loading?: boolean;
+    showWeekdayLabels?: boolean;
+    // import { Day as WeekDay } from 'date-fns';
+    // weekStart?: WeekDay;
+};
 
-export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
+const SwitchLabel = ({ children }: { children: string | ReactNode }) => (
+    <span
+        className={css({
+            fontSize: 'md',
+            color: 'white',
+        })}>
+        {children}
+    </span>
+);
+
+// Not sure what to call;
+// this allows us to manage page level state
+// Would put in the page, but app routing
+export function GraphListWrapper(props: GraphListWrapperProps) {
+    const { years = [], username, avatarUrl } = props;
+
     const [renderYears, setRenderYears] = useState(years);
 
     // Boolean Controls
@@ -117,11 +135,12 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                     })}
                 </Grid>
             </StyledFlex>
+            <div>hey</div>
             <div>
                 <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
-                {/* Booleans */}
                 <Grid gridTemplateColumns={[1, 2]}>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
+                    {/* Booleans */}
+                    <Box display={'flex'} flexDir='column' gap={2}>
                         <Switch
                             checked={showWeekdayLabels}
                             onCheckedChange={(e) => {
@@ -129,8 +148,6 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             }}>
                             Show Weekday Labels
                         </Switch>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
                             checked={useLightMode === 'dark' ? false : true}
                             onCheckedChange={(e) => {
@@ -138,8 +155,6 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             }}>
                             Light Mode
                         </Switch>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
                             checked={hideColorLegend}
                             onCheckedChange={(e) => {
@@ -147,8 +162,6 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             }}>
                             Hide Color Legend
                         </Switch>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
                             checked={hideMonthLabels}
                             onCheckedChange={(e) => {
@@ -156,8 +169,6 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             }}>
                             Hide Month Labels
                         </Switch>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Switch
                             checked={hideTotalCount}
                             onCheckedChange={(e) => {
@@ -166,9 +177,8 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             Hide Total Count
                         </Switch>
                     </Box>
-                </Grid>
-                <Grid gridTemplateColumns={[1, 2]}>
-                    <Box display={'flex'} flexDir={'row'} gap={1} py='2'>
+                    {/* Sliders */}
+                    <Box display={'flex'} flexDir='column' gap={4}>
                         <Slider
                             min={2}
                             max={20}
@@ -179,16 +189,8 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                                 console.log(details.value);
                                 setBlockMargin(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Block Margin
-                            </span>
+                            <SwitchLabel>Block Margin</SwitchLabel>
                         </Slider>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Slider
                             min={2}
                             max={20}
@@ -197,16 +199,8 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             onValueChangeEnd={(details) => {
                                 setBlockRadius(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Block Radius
-                            </span>
+                            <SwitchLabel>Block Radius</SwitchLabel>
                         </Slider>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Slider
                             min={2}
                             max={20}
@@ -215,17 +209,9 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             onValueChangeEnd={(details) => {
                                 setBlockSize(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Block Size
-                            </span>
+                            <SwitchLabel>Block Size</SwitchLabel>
                         </Slider>
-                    </Box>
-                    fontSize, maxLevel, weekStart,
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
+
                         <Slider
                             min={6}
                             max={32}
@@ -234,16 +220,9 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             onValueChangeEnd={(details) => {
                                 setFontSize(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Font Size
-                            </span>
+                            <SwitchLabel>Font Size</SwitchLabel>
                         </Slider>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
+
                         <Slider
                             min={1}
                             max={9}
@@ -251,16 +230,8 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             onValueChangeEnd={(details) => {
                                 setMaxLevel(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Max Level
-                            </span>
+                            <SwitchLabel>Max Level</SwitchLabel>
                         </Slider>
-                    </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}>
                         <Slider
                             min={0}
                             max={6}
@@ -268,43 +239,60 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                             onValueChangeEnd={(details) => {
                                 setWeekStart(details.value[0]);
                             }}>
-                            <span
-                                className={css({
-                                    fontSize: 'md',
-                                    color: 'white',
-                                })}>
-                                Week Start {weekStart}
-                            </span>
+                            <SwitchLabel>Week Start {weekStart.toString()}</SwitchLabel>
                         </Slider>
                     </Box>
-                    <Box display={'flex'} flexDir={'row'} gap={1}></Box>
                 </Grid>
             </div>
-            <Link href='/'>
-                <StyledButton flavor='secondary'>Back</StyledButton>
-            </Link>
-            <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={avatarUrl}
-                    alt={username}
-                    className={css({
-                        height: '50px',
-                        width: '50px',
-                        borderRadius: '50%',
-                        overflow: 'hidden',
-                    })}
-                />
-                <Link
-                    target='_blank'
-                    href={`https://github.com/${username}`}
-                    className={css({
-                        fontSize: 30,
-                        fontWeight: 700,
-                    })}>
-                    {username}
-                </Link>
-            </StyledFlex>
+            <div>before graphlist</div>
+            {/* Graphlist */}
+            <GraphList {...props} {...allConfigProps} renderYears={renderYears} />
+        </StyledFlex>
+    );
+}
+
+// add all boolean controls
+// add all slider props
+
+// add slider
+// pull out header
+
+// pull out controls
+
+const linkStyles = { lineHeight: 1, fontSize: 24, fontWeight: 700 };
+
+type GraphListProps = GraphListWrapperProps &
+    ActivityCalendarConfigProps & { renderYears: number[] };
+
+export function GraphList({
+    years = [],
+    username,
+    avatarUrl,
+    renderYears,
+    ...rest
+}: GraphListProps) {
+    return (
+        <StyledFlex direction='vertical' gap={6}>
+            <div>before header</div>
+            {/* header */}
+            <Flex alignItems='center' justifyContent='space-between'>
+                <Flex gap={2} justifyContent='flex-start'>
+                    <Link href='/' className={css(linkStyles)}>
+                        home
+                    </Link>
+                    <span className={css(linkStyles)}>/</span>
+                    <Link
+                        target='_blank'
+                        href={`https://github.com/${username}`}
+                        className={css(linkStyles)}>
+                        {username}
+                    </Link>
+                </Flex>
+                <Flex gap='2'>
+                    <StyledButton flavor='secondary'>Controls</StyledButton>
+                    <StyledButton flavor='outline'>Embed</StyledButton>
+                </Flex>
+            </Flex>
             {renderYears.map((year) => (
                 <div key={year}>
                     <h3
@@ -314,9 +302,35 @@ export function GraphList({ years = [], username, avatarUrl }: GraphListProps) {
                         })}>
                         {year}
                     </h3>
-                    <GitHubCalendar username={username} year={year} {...allConfigProps} />
+                    <GitHubCalendar username={username} year={year} {...rest} />
                 </div>
             ))}
         </StyledFlex>
     );
 }
+
+/* Alt Image Version */
+
+// <Flex alignItems='middle' gap={2}>
+//     {/* eslint-disable-next-line @next/next/no-img-element  */}
+//     <img
+//         src={avatarUrl}
+//         alt={username}
+//         className={css({
+//             height: '8',
+//             width: '8',
+//             borderRadius: '50%',
+//             overflow: 'hidden',
+//         })}
+//     />
+//     <Link
+//         target='_blank'
+//         href={`https://github.com/${username}`}
+//         className={css({
+//             lineHeight: 1,
+//             fontSize: 24,
+//             fontWeight: 700,
+//         })}>
+//         {username}
+//     </Link>
+// </Flex>;

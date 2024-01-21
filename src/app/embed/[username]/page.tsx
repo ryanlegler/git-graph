@@ -2,13 +2,13 @@ import { GraphList } from '@/components/graphList';
 
 import { getProfile } from '@/dataLayer/getProfile';
 import { getContributions } from '@/dataLayer/getContributions';
-export default async function UserPage({
-    params: { username },
-    searchParams,
-}: {
-    params: { username: string };
+import { PageProps } from '@/app/types';
+
+type UsersPageProps = PageProps & {
     searchParams: { hideColorLegend: 'true' | 'false' };
-}) {
+    // need all the other options here
+};
+export default async function UserPage({ params: { username }, searchParams }: UsersPageProps) {
     const profile = await getProfile(username);
     const contributions = await getContributions(username);
     const { hideColorLegend } = searchParams;

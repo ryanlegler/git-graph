@@ -4,6 +4,13 @@ import { StyledFlex } from '@/components/ui/flex';
 import { Controls } from '@/components/controls';
 import { getContributions } from '@/dataLayer/getContributions';
 import { Suspense } from 'react';
+import { PageProps } from '@/app/types';
+
+export async function generateMetadata({ params }: PageProps) {
+    return {
+        title: `${params.username} (GitGraph)`,
+    };
+}
 
 export default async function UserPage({ params: { username } }: { params: { username: string } }) {
     const profile = await getProfile(username);

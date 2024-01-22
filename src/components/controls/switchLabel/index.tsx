@@ -1,0 +1,1 @@
+export { SwitchLabel } from './SwitchLabel';

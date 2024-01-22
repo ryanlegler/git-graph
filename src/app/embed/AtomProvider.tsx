@@ -16,9 +16,7 @@ const HydrateAtoms = ({ initialValues, children }: PropsWithChildren<any>) => {
 };
 
 export const AtomProvider = ({ children, searchParams, years: initialYears }: BuilderProps) => {
-    console.log('searchParams', searchParams);
     const hydratedParams = useHydrateSearchParams(searchParams);
-
     const { years = [], ...options } = hydratedParams;
 
     const mergedOptions = { ...OPTIONS_DEFAULTS, ...options };

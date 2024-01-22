@@ -21,6 +21,8 @@ import { ActivityCalendarConfigProps, ControlsProps } from './types';
 import { css } from 'styled-system/css';
 import { useDayString } from './hooks/useDayString';
 
+import { Day } from './types';
+
 export function Controls({ years, username }: ControlsProps) {
     const [controlsOptions, setControlsOptions] = useAtom(optionsAtom);
     const [showControls, setShowControls] = useAtom(controlsVisibilityAtom);

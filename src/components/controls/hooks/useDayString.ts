@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Day } from '../types';
 
 // use the hook in a "use client" component
 export function useDayString(day: Day) {

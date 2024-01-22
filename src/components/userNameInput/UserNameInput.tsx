@@ -47,7 +47,8 @@ export function UserNameInput() {
             className={css({
                 display: 'flex',
                 gap: 3,
-            })}>
+            })}
+        >
             <StyledFlex vAlign='middle' hAlign='center' direction='vertical' gap={4}>
                 <StyledFlex vAlign='middle' direction='horizontal' gap={4}>
                     <StyledInput
@@ -65,7 +66,8 @@ export function UserNameInput() {
                         hAlign='center'
                         direction='vertical'
                         gap={4}
-                        className={css({ textAlign: 'center' })}>
+                        className={css({ textAlign: 'center' })}
+                    >
                         <span data-testid='status-message-error'> ⚠️ {errorMessage}</span>
                     </StyledFlex>
                 ) : null}

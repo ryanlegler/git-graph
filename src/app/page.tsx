@@ -12,18 +12,21 @@ export default function Home() {
             gap={4}
             className={css({
                 h: '100vh',
-            })}>
+            })}
+        >
             <span
                 className={css({
                     fontSize: 100,
-                })}>
+                })}
+            >
                 🐙
             </span>
             <h1
                 className={css({
                     fontSize: 40,
                     fontWeight: 900,
-                })}>
+                })}
+            >
                 Git Graph
             </h1>
 

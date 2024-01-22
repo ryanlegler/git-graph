@@ -28,7 +28,8 @@ export const PrimaryCSS: Story = {
                 _hover: {
                     bg: 'github.100',
                 },
-            })}>
+            })}
+        >
             Click Me
         </button>
     ),

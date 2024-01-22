@@ -10,19 +10,22 @@ export default function LoadingPage() {
             gap={4}
             className={css({
                 h: '100vh',
-            })}>
+            })}
+        >
             <StyledFlex direction='horizontal' vAlign='middle' gap={5}>
                 <span
                     className={css({
                         fontSize: 80,
-                    })}>
+                    })}
+                >
                     🚧
                 </span>
                 <h2
                     className={css({
                         fontSize: 50,
                         fontWeight: 900,
-                    })}>
+                    })}
+                >
                     Loading...
                 </h2>
             </StyledFlex>

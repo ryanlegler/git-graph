@@ -100,7 +100,8 @@ export const WithCSS: Story = {
                 _hover: {
                     bg: 'github.100',
                 },
-            })}>
+            })}
+        >
             Custom
         </Button>
     ),

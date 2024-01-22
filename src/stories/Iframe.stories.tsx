@@ -17,6 +17,7 @@ export const Primary: Story = {
         <iframe
             height='800px'
             width='100%'
-            src={`https://git-graph.vercel.app/embed/${userName}?hideColorLegend=${hideColorLegend}`}></iframe>
+            src={`https://git-graph.vercel.app/embed/${userName}?hideColorLegend=${hideColorLegend}`}
+        ></iframe>
     ),
 };

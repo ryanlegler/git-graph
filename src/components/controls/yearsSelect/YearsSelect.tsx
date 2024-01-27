@@ -1,46 +1,66 @@
+import { useCallback } from 'react';
 import * as Select from '@/components/ui/Select';
-import { Box, Flex, Grid } from 'styled-system/jsx';
+import { Box } from 'styled-system/jsx';
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
 import { YearsSelectProps } from './types';
+import {} from '@ark-ui/react/select';
 
-export function YearsSelect(props: YearsSelectProps) {
-    // type Item = { label: string; value: string; disabled?: boolean };
-    // const [_, setSelectedItems] = useState<Item[]>([]);
+import { CollectionItem } from '@ark-ui/react/select';
+import {} from '@ark-ui/react/select';
+interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
+    value: string[];
+    items: T[];
+}
 
-    if (!props.years) {
-        return <div />;
-    }
-
+export function YearsSelect({ years, setSelected, selected }: YearsSelectProps) {
     const rangeItems = [
-        { label: 'This Year', id: [props.years[0]], value: 'this-year' },
-        { label: 'Last Year', id: [props.years[1]], value: 'last-year' },
-        { label: 'All Years', id: props.years, value: 'all-years' },
+        { label: 'This Year', value: 'this-year' },
+        { label: 'Last Year', value: 'last-year' },
+        { label: 'All Years', value: 'all-years' },
     ];
 
-    const individualItems = props.years.map((year) => {
+    const individualItems = years.map((year) => {
         return {
             label: year.toString(),
-            value: [year],
-            id: `${year.toString()}`,
+            value: year.toString(),
         };
     });
 
     const mergeItems = [...rangeItems, ...individualItems];
 
-    // console.log('mergeItems', mergeItems);
+    // get the current year - user may not actually have data for this year but thats okay I think
+    const thisYear = new Date().getFullYear();
+
+    const handleOnChange = useCallback(
+        ({ value }: ValueChangeDetails<CollectionItem>) => {
+            if (value.includes('all-years')) {
+                setSelected(years);
+            } else if (value.includes('this-year')) {
+                setSelected([thisYear]);
+            } else if (value.includes('last-year')) {
+                const lastYear = thisYear - 1;
+                setSelected([lastYear]);
+            } else {
+                setSelected(value.map((year) => parseInt(year)));
+            }
+        },
+        [setSelected, thisYear, years]
+    );
+
+    if (!years) {
+        return <div />;
+    }
 
     return (
         <Select.Root
+            value={selected.map((year) => year.toString())}
             positioning={{ sameWidth: true }}
             width='2xs'
             // uses item.value internally as a key 🚨 Dear Arc, please add this to your docs 🤦‍♂️
             items={mergeItems}
-            bg='red.5'
-            color='lime'
-            onValueChange={(e) => {
-                console.log(e.items);
-                console.log(e);
-            }}
+            closeOnSelect={false}
+            multiple={true}
+            onValueChange={handleOnChange}
         >
             <Select.Label style={{ display: 'none' }}>Framework</Select.Label>
             <Select.Control>
@@ -51,8 +71,6 @@ export function YearsSelect(props: YearsSelectProps) {
             </Select.Control>
             <Select.Positioner>
                 <Select.Content style={{ background: 'black' }}>
-                    {/*
-                     */}
                     <Select.ItemGroup id='rangeItems'>
                         {rangeItems.map((item, i) => (
                             <Select.Item key={i} item={item}>

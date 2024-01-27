@@ -1,6 +1,6 @@
 'use client';
 
-import { renderYearsAtom } from '@/atoms';
+import { selectedYearsAtom } from '@/atoms';
 import { useHydrateAtoms } from 'jotai/utils';
 import { PropsWithChildren } from 'react';
 
@@ -13,7 +13,7 @@ const HydrateAtoms = ({ initialValues, children }: any) => {
 
 export const YearsAtomProvider = ({ children, years }: BuilderProps) => {
     return (
-        <HydrateAtoms initialValues={[[renderYearsAtom, years]]}>
+        <HydrateAtoms initialValues={[[selectedYearsAtom, years]]}>
             <>{children}</>
         </HydrateAtoms>
     );

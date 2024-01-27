@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
 import { useParams } from 'next/navigation';
-import { optionsAtom, renderYearsAtom } from '@/atoms';
+import { optionsAtom, selectedYearsAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
 
 export function EmbedCodeModal() {
@@ -25,7 +25,7 @@ export function EmbedCodeModal() {
         weekStart,
     } = useAtomValue(optionsAtom);
 
-    const years = useAtomValue(renderYearsAtom);
+    const years = useAtomValue(selectedYearsAtom);
 
     const embedString = useMemo(
         () =>

@@ -1,6 +1,6 @@
 'use client';
 
-import { renderYearsAtom, optionsAtom, OPTIONS_DEFAULTS } from '@/atoms';
+import { selectedYearsAtom, optionsAtom, OPTIONS_DEFAULTS } from '@/atoms';
 import { useHydrateAtoms } from 'jotai/utils';
 import { PropsWithChildren } from 'react';
 import { useHydrateSearchParams } from './hooks/useHydrateSearchParams';
@@ -23,7 +23,7 @@ export const AtomProvider = ({ children, searchParams, years: initialYears }: Bu
     const mergedYears = years?.length ? years : initialYears;
 
     return (
-        <HydrateAtoms initialValues={[[renderYearsAtom, mergedYears]]}>
+        <HydrateAtoms initialValues={[[selectedYearsAtom, mergedYears]]}>
             <HydrateAtoms initialValues={[[optionsAtom, mergedOptions]]}>
                 <>{children}</>
             </HydrateAtoms>

@@ -20,4 +20,4 @@ export const optionsAtom = atom<ActivityCalendarConfigProps>(OPTIONS_DEFAULTS);
 
 export const controlsVisibilityAtom = atom<boolean>(false);
 
-export const renderYearsAtom = atom<number[]>([]);
+export const selectedYearsAtom = atom<number[]>([]);

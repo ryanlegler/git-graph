@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { css } from 'styled-system/css';
 import { useAtomValue } from 'jotai/react';
-import { optionsAtom, renderYearsAtom } from '@/atoms';
+import { optionsAtom, selectedYearsAtom } from '@/atoms';
 
 import ActivityCalendar, { Props as ActivityCalendarProps } from 'react-activity-calendar';
 
@@ -31,7 +31,7 @@ export function GraphList({
     }, []);
 
     const controlsOptions = useAtomValue(optionsAtom);
-    const years = useAtomValue(renderYearsAtom) || [];
+    const years = useAtomValue(selectedYearsAtom) || [];
 
     const colorScaleDark = ['#00429d', '#1f58a6', '#376ead', '#ffa59e', '#dd4c65'];
     const colorScaleLight = ['#f9ed69', '#f08a5d', '#b83b5e', '#6a2c70', '#3c1642'];

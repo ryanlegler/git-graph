@@ -15,7 +15,7 @@ import { YearsSelect } from '@components/controls/yearsSelect';
 import { SwitchLabel } from '@components/controls/switchLabel';
 
 // atoms
-import { controlsVisibilityAtom, optionsAtom, renderYearsAtom } from '@/atoms';
+import { controlsVisibilityAtom, optionsAtom, selectedYearsAtom } from '@/atoms';
 import { ActivityCalendarConfigProps, ControlsProps } from './types';
 
 import { css } from 'styled-system/css';
@@ -29,9 +29,9 @@ export function Controls({ years, username }: ControlsProps) {
 
     // 📅 years stuff:
     // "years" -> all the years
-    // "renderYears" -> the years we are currently rendering based on the selection in the UI
-    // The defaults for "renderYears" is set in <YearsAtomProvider> so all atoms have access to them
-    const [renderYears, setRenderYears] = useAtom(renderYearsAtom);
+    // "selectedYears" -> the years we are currently rendering based on the selection in the UI
+    // The defaults for "selectedYears" is set in <YearsAtomProvider> so all atoms have access to them
+    const [selectedYears, setSelectedYears] = useAtom(selectedYearsAtom);
 
     const {
         hideColorLegend,
@@ -65,11 +65,11 @@ export function Controls({ years, username }: ControlsProps) {
         <StyledFlex direction='vertical' py={4} w='full' maxW={850}>
             <PageHeaderBar username={username}>
                 <Flex gap='2'>
-                    {/* 
-                    Maybe don't delete this component, but we don't need it here
-                    <ControlledParkDemo /> 
-                    */}
-                    <YearsSelect years={years} />
+                    <YearsSelect
+                        years={years}
+                        setSelected={setSelectedYears}
+                        selected={selectedYears}
+                    />
                     <Button
                         onClick={() => {
                             setShowControls((prev) => !prev);
@@ -81,169 +81,123 @@ export function Controls({ years, username }: ControlsProps) {
                 </Flex>
             </PageHeaderBar>
 
-            <StyledFlex gap={3} direction='vertical'>
-                {showControls ? (
+            {showControls ? (
+                <StyledFlex gap={3} direction='vertical'>
                     <StyledFlex direction='vertical' gap={3}>
-                        <StyledFlex direction='vertical' gap={1} bg='red'>
-                            <Grid gridTemplateColumns={[1, 2, 4]}>
-                                {years.map((year) => {
-                                    const isDisabled =
-                                        renderYears.includes(year) && renderYears.length === 1;
-                                    return (
-                                        <Box key={year} display={'flex'} flexDir={'row'} gap={1}>
-                                            <Switch
-                                                // className={css({ _disabled: { opacity: 0.5 } })}
-                                                defaultChecked
-                                                disabled={isDisabled}
-                                                checked={renderYears.includes(year)}
-                                                onCheckedChange={(e) => {
-                                                    setRenderYears((prev) => {
-                                                        const findIndex = prev.indexOf(year);
+                        <Box>
+                            <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
+                            <Grid gridTemplateColumns={[1, 2]}>
+                                {/* Booleans */}
+                                <Box display={'flex'} flexDir='column' gap={2}>
+                                    <Switch
+                                        checked={showWeekdayLabels}
+                                        onCheckedChange={() => {
+                                            handleSetBooleanOption('showWeekdayLabels');
+                                        }}
+                                    >
+                                        Show Weekday Labels
+                                    </Switch>
+                                    <Switch
+                                        checked={useLightMode === 'dark' ? false : true}
+                                        onCheckedChange={() => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                colorScheme:
+                                                    prev.colorScheme === 'dark' ? 'light' : 'dark',
+                                            }));
+                                        }}
+                                    >
+                                        Light Mode
+                                    </Switch>
+                                    <Switch
+                                        checked={hideColorLegend}
+                                        onCheckedChange={(e) => {
+                                            handleSetBooleanOption('hideColorLegend');
+                                        }}
+                                    >
+                                        Hide Color Legend
+                                    </Switch>
+                                    <Switch
+                                        checked={hideMonthLabels}
+                                        onCheckedChange={() => {
+                                            handleSetBooleanOption('hideMonthLabels');
+                                        }}
+                                    >
+                                        Hide Month Labels
+                                    </Switch>
+                                    <Switch
+                                        checked={hideTotalCount}
+                                        onCheckedChange={() => {
+                                            handleSetBooleanOption('hideTotalCount');
+                                        }}
+                                    >
+                                        Hide Total Count
+                                    </Switch>
+                                </Box>
+                                {/* Sliders */}
+                                <Box display={'flex'} flexDir='column' gap={4}>
+                                    <Slider
+                                        min={2}
+                                        max={20}
+                                        step={2}
+                                        value={[blockMargin as number]}
+                                        onValueChange={(details) => console.log(details.value)}
+                                        onValueChangeEnd={(details) => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                blockMargin: details.value[0],
+                                            }));
+                                        }}
+                                    >
+                                        <SwitchLabel>Block Margin</SwitchLabel>
+                                    </Slider>
+                                    <Slider
+                                        min={2}
+                                        max={20}
+                                        step={2}
+                                        value={[blockRadius as number]}
+                                        onValueChangeEnd={(details) => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                blockRadius: details.value[0],
+                                            }));
+                                        }}
+                                    >
+                                        <SwitchLabel>Block Radius</SwitchLabel>
+                                    </Slider>
+                                    <Slider
+                                        min={2}
+                                        max={20}
+                                        step={2}
+                                        value={[blockSize as number]}
+                                        onValueChangeEnd={(details) => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                blockSize: details.value[0],
+                                            }));
+                                        }}
+                                    >
+                                        <SwitchLabel>Block Size</SwitchLabel>
+                                    </Slider>
 
-                                                        // Copy state so we can modify
-                                                        const clonePrev = [...renderYears];
+                                    <Slider
+                                        min={6}
+                                        max={32}
+                                        step={2}
+                                        value={[fontSize as number]}
+                                        onValueChangeEnd={(details) => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                fontSize: details.value[0],
+                                            }));
+                                        }}
+                                    >
+                                        <SwitchLabel>Font Size</SwitchLabel>
+                                    </Slider>
 
-                                                        // If year not included
-                                                        if (findIndex === -1) {
-                                                            // Add it
-                                                            clonePrev.push(year);
-                                                            // Sort
-                                                            clonePrev.sort((a, b) => b - a);
-                                                            return clonePrev;
-                                                        }
-                                                        // Otherwise
-                                                        else {
-                                                            // Remove
-                                                            clonePrev.splice(findIndex, 1);
-                                                            return clonePrev;
-                                                        }
-                                                    });
-                                                }}
-                                            >
-                                                {year}
-                                            </Switch>
-                                        </Box>
-                                    );
-                                })}
-                            </Grid>
-                        </StyledFlex>
-                        {showControls && (
-                            <Box>
-                                <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
-                                <Grid gridTemplateColumns={[1, 2]}>
-                                    {/* Booleans */}
-                                    <Box display={'flex'} flexDir='column' gap={2}>
-                                        <Switch
-                                            checked={showWeekdayLabels}
-                                            onCheckedChange={() => {
-                                                handleSetBooleanOption('showWeekdayLabels');
-                                            }}
-                                        >
-                                            Show Weekday Labels
-                                        </Switch>
-                                        <Switch
-                                            checked={useLightMode === 'dark' ? false : true}
-                                            onCheckedChange={() => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    colorScheme:
-                                                        prev.colorScheme === 'dark'
-                                                            ? 'light'
-                                                            : 'dark',
-                                                }));
-                                            }}
-                                        >
-                                            Light Mode
-                                        </Switch>
-                                        <Switch
-                                            checked={hideColorLegend}
-                                            onCheckedChange={(e) => {
-                                                handleSetBooleanOption('hideColorLegend');
-                                            }}
-                                        >
-                                            Hide Color Legend
-                                        </Switch>
-                                        <Switch
-                                            checked={hideMonthLabels}
-                                            onCheckedChange={() => {
-                                                handleSetBooleanOption('hideMonthLabels');
-                                            }}
-                                        >
-                                            Hide Month Labels
-                                        </Switch>
-                                        <Switch
-                                            checked={hideTotalCount}
-                                            onCheckedChange={() => {
-                                                handleSetBooleanOption('hideTotalCount');
-                                            }}
-                                        >
-                                            Hide Total Count
-                                        </Switch>
-                                    </Box>
-                                    {/* Sliders */}
-                                    <Box display={'flex'} flexDir='column' gap={4}>
-                                        <Slider
-                                            min={2}
-                                            max={20}
-                                            step={2}
-                                            value={[blockMargin as number]}
-                                            onValueChange={(details) => console.log(details.value)}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    blockMargin: details.value[0],
-                                                }));
-                                            }}
-                                        >
-                                            <SwitchLabel>Block Margin</SwitchLabel>
-                                        </Slider>
-                                        <Slider
-                                            min={2}
-                                            max={20}
-                                            step={2}
-                                            value={[blockRadius as number]}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    blockRadius: details.value[0],
-                                                }));
-                                            }}
-                                        >
-                                            <SwitchLabel>Block Radius</SwitchLabel>
-                                        </Slider>
-                                        <Slider
-                                            min={2}
-                                            max={20}
-                                            step={2}
-                                            value={[blockSize as number]}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    blockSize: details.value[0],
-                                                }));
-                                            }}
-                                        >
-                                            <SwitchLabel>Block Size</SwitchLabel>
-                                        </Slider>
-
-                                        <Slider
-                                            min={6}
-                                            max={32}
-                                            step={2}
-                                            value={[fontSize as number]}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    fontSize: details.value[0],
-                                                }));
-                                            }}
-                                        >
-                                            <SwitchLabel>Font Size</SwitchLabel>
-                                        </Slider>
-
-                                        {/* max level seems to interact with potentially both the color scales and the "level" key on the Activity data..
+                                    {/* max level seems to interact with potentially both the color scales and the "level" key on the Activity data..
                                         Need to investigate further how we are supposed to account for this if we actually want to support this tunable   */}
-                                        {/* <Slider
+                                    {/* <Slider
                                             min={1}
                                             max={9}
                                             value={[maxLevel as number]}
@@ -256,27 +210,26 @@ export function Controls({ years, username }: ControlsProps) {
                                             <SwitchLabel>Max Level</SwitchLabel>
                                         </Slider> */}
 
-                                        {/* we should maybe use a select for this */}
-                                        <Slider
-                                            min={0}
-                                            max={6}
-                                            value={[Number(weekStart) as number]}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    weekStart: details.value[0] as Day,
-                                                }));
-                                            }}
-                                        >
-                                            <SwitchLabel>Week Start: {weekStartString}</SwitchLabel>
-                                        </Slider>
-                                    </Box>
-                                </Grid>
-                            </Box>
-                        )}
+                                    {/* we should maybe use a select for this */}
+                                    <Slider
+                                        min={0}
+                                        max={6}
+                                        value={[Number(weekStart) as number]}
+                                        onValueChangeEnd={(details) => {
+                                            setControlsOptions((prev) => ({
+                                                ...prev,
+                                                weekStart: details.value[0] as Day,
+                                            }));
+                                        }}
+                                    >
+                                        <SwitchLabel>Week Start: {weekStartString}</SwitchLabel>
+                                    </Slider>
+                                </Box>
+                            </Grid>
+                        </Box>
                     </StyledFlex>
-                ) : null}
-            </StyledFlex>
+                </StyledFlex>
+            ) : null}
         </StyledFlex>
     );
 }

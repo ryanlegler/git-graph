@@ -26,12 +26,13 @@ type UsersPageProps = PageProps & {
 
 export default async function UserPage({ params: { username }, searchParams }: UsersPageProps) {
     const profile = await getProfile(username);
-    const contributions = await getContributions(username);
-    const years = getYears(contributions);
+    const { contributionsByYear, contributions } = await getContributions(username);
+    const years = getYears(contributionsByYear);
     return (
         <AtomProvider searchParams={searchParams} years={years}>
             <GraphList
                 contributions={contributions}
+                contributionsByYear={contributionsByYear}
                 username={username}
                 avatarUrl={profile.avatar_url}
             />

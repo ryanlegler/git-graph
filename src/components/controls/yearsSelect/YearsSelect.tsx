@@ -7,6 +7,7 @@ import {} from '@ark-ui/react/select';
 
 import { CollectionItem } from '@ark-ui/react/select';
 import {} from '@ark-ui/react/select';
+import { Button } from '@/components/ui/button';
 interface ValueChangeDetails<T extends CollectionItem = CollectionItem> {
     value: string[];
     items: T[];
@@ -47,6 +48,18 @@ export function YearsSelect({ years, setSelected, selected }: YearsSelectProps) 
         [setSelected, thisYear, years]
     );
 
+    // if all the years are select add { label: 'This Year', value: 'this-year' } to the selected array
+    //else
+    // if this year is selected add { label: 'This Year', value: 'this-year' } to the selected array
+    // if last last is selected add { label: 'Last Year', value: 'last-year' } to the selected array
+
+    // const derivedSelected: (number | string)[] = [...selected];
+    // if (selected.length === years.length) {
+    //     derivedSelected.push('all-years');
+    // }
+
+    // console.log('derivedSelected', derivedSelected);
+
     if (!years) {
         return <div />;
     }
@@ -74,10 +87,9 @@ export function YearsSelect({ years, setSelected, selected }: YearsSelectProps) 
                     <Select.ItemGroup id='rangeItems'>
                         {rangeItems.map((item, i) => (
                             <Select.Item key={i} item={item}>
-                                <Select.ItemText>{item.label}</Select.ItemText>
-                                <Select.ItemIndicator>
-                                    <CheckIcon />
-                                </Select.ItemIndicator>
+                                <Button key={i}>
+                                    <Select.ItemText>{item.label}</Select.ItemText>
+                                </Button>
                             </Select.Item>
                         ))}
                     </Select.ItemGroup>

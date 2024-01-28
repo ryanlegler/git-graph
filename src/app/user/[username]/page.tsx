@@ -16,8 +16,9 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function UserPage({ params: { username } }: { params: { username: string } }) {
     const profile = await getProfile(username);
-    const contributions = await getContributions(username);
-    const years = getYears(contributions);
+
+    const { contributionsByYear, contributions } = await getContributions(username);
+    const years = getYears(contributionsByYear);
 
     return (
         <StyledFlex direction='vertical' hAlign='center'>
@@ -26,6 +27,7 @@ export default async function UserPage({ params: { username } }: { params: { use
                 <Suspense fallback={<div>loading...</div>}>
                     <GraphList
                         contributions={contributions}
+                        contributionsByYear={contributionsByYear}
                         username={username}
                         avatarUrl={profile.avatar_url}
                     />

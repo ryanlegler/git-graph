@@ -1,19 +1,19 @@
 'use client';
 
-import { selectedYearsAtom } from '@/atoms';
+import { selectedYearAtom } from '@/atoms';
 import { useHydrateAtoms } from 'jotai/utils';
 import { PropsWithChildren } from 'react';
 
-export type BuilderProps = PropsWithChildren<{ years?: number[] }>;
+export type BuilderProps = PropsWithChildren<{ initialYear?: number }>;
 
 const HydrateAtoms = ({ initialValues, children }: any) => {
     useHydrateAtoms(initialValues);
     return children;
 };
 
-export const YearsAtomProvider = ({ children, years }: BuilderProps) => {
+export const YearsAtomProvider = ({ children, initialYear }: BuilderProps) => {
     return (
-        <HydrateAtoms initialValues={[[selectedYearsAtom, years]]}>
+        <HydrateAtoms initialValues={[[selectedYearAtom, initialYear]]}>
             <>{children}</>
         </HydrateAtoms>
     );

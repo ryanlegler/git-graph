@@ -17,14 +17,17 @@ export async function generateMetadata({ params }: PageProps) {
 export default async function UserPage({ params: { username } }: { params: { username: string } }) {
     const profile = await getProfile(username);
     const contributions = await getContributions(username);
-    const years = getYears(contributions);
+    const availableYears = getYears(contributions);
+    const currentYear = availableYears?.[0];
 
     return (
         <StyledFlex direction='vertical' hAlign='center'>
-            <YearsAtomProvider years={years}>
-                <Controls years={years} username={username} />
+            <YearsAtomProvider initialYear={currentYear}>
+                <Controls availableYears={availableYears} username={username} />
                 <Suspense fallback={<div>loading...</div>}>
                     <GraphList
+                        shouldResetYear
+                        currentYear={currentYear}
                         contributions={contributions}
                         username={username}
                         avatarUrl={profile.avatar_url}

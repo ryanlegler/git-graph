@@ -15,7 +15,7 @@ import { YearsSelect } from '@components/controls/yearsSelect';
 import { SwitchLabel } from '@components/controls/switchLabel';
 
 // atoms
-import { controlsVisibilityAtom, optionsAtom, selectedYearsAtom } from '@/atoms';
+import { controlsVisibilityAtom, optionsAtom, selectedYearAtom } from '@/atoms';
 import { ActivityCalendarConfigProps, ControlsProps } from './types';
 
 import { css } from 'styled-system/css';
@@ -23,15 +23,10 @@ import { useDayString } from './hooks/useDayString';
 
 import { Day } from './types';
 
-export function Controls({ years, username }: ControlsProps) {
+export function Controls({ availableYears, username }: ControlsProps) {
     const [controlsOptions, setControlsOptions] = useAtom(optionsAtom);
     const [showControls, setShowControls] = useAtom(controlsVisibilityAtom);
-
-    // 📅 years stuff:
-    // "years" -> all the years
-    // "selectedYears" -> the years we are currently rendering based on the selection in the UI
-    // The defaults for "selectedYears" is set in <YearsAtomProvider> so all atoms have access to them
-    const [selectedYears, setSelectedYears] = useAtom(selectedYearsAtom);
+    const [selectedYear, setSelectedYear] = useAtom(selectedYearAtom);
 
     const {
         hideColorLegend,
@@ -66,9 +61,9 @@ export function Controls({ years, username }: ControlsProps) {
             <PageHeaderBar username={username}>
                 <Flex gap='2'>
                     <YearsSelect
-                        years={years}
-                        setSelected={setSelectedYears}
-                        selected={selectedYears}
+                        availableYears={availableYears}
+                        setSelected={setSelectedYear}
+                        selected={selectedYear}
                     />
                     <Button
                         onClick={() => {

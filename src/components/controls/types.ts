@@ -21,7 +21,7 @@ export type ActivityCalendarConfigProps = Omit<Props, 'data'>;
 // };
 
 export type ControlsProps = {
-    years: number[];
+    availableYears: number[];
     username: string;
 };
 

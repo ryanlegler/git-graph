@@ -29,8 +29,9 @@ export default async function UserPage({ params: { username }, searchParams }: U
     const contributions = await getContributions(username);
     const years = getYears(contributions);
     return (
-        <AtomProvider searchParams={searchParams} years={years}>
+        <AtomProvider searchParams={searchParams} fallbackYear={years?.[0]}>
             <GraphList
+                currentYear={years?.[0]}
                 contributions={contributions}
                 username={username}
                 avatarUrl={profile.avatar_url}

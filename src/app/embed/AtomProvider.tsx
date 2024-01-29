@@ -1,13 +1,13 @@
 'use client';
 
-import { selectedYearsAtom, optionsAtom, OPTIONS_DEFAULTS } from '@/atoms';
+import { selectedYearAtom, optionsAtom, OPTIONS_DEFAULTS } from '@/atoms';
 import { useHydrateAtoms } from 'jotai/utils';
 import { PropsWithChildren } from 'react';
 import { useHydrateSearchParams } from './hooks/useHydrateSearchParams';
 
 export type BuilderProps = PropsWithChildren<{
     searchParams: Record<string, string>;
-    years: number[];
+    fallbackYear: number;
 }>;
 
 const HydrateAtoms = ({ initialValues, children }: PropsWithChildren<any>) => {
@@ -15,15 +15,15 @@ const HydrateAtoms = ({ initialValues, children }: PropsWithChildren<any>) => {
     return children;
 };
 
-export const AtomProvider = ({ children, searchParams, years: initialYears }: BuilderProps) => {
+export const AtomProvider = ({ children, searchParams, fallbackYear }: BuilderProps) => {
     const hydratedParams = useHydrateSearchParams(searchParams);
-    const { years = [], ...options } = hydratedParams;
+    const { year, ...options } = hydratedParams;
 
     const mergedOptions = { ...OPTIONS_DEFAULTS, ...options };
-    const mergedYears = years?.length ? years : initialYears;
+    const selectedYear = year || fallbackYear;
 
     return (
-        <HydrateAtoms initialValues={[[selectedYearsAtom, mergedYears]]}>
+        <HydrateAtoms initialValues={[[selectedYearAtom, selectedYear]]}>
             <HydrateAtoms initialValues={[[optionsAtom, mergedOptions]]}>
                 <>{children}</>
             </HydrateAtoms>

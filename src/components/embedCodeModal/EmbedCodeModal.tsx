@@ -1,15 +1,18 @@
 'use client';
 import { Button } from '@components/ui/button';
 import * as Dialog from '@/components/ui/Dialog';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
 import { useParams } from 'next/navigation';
 import { optionsAtom, selectedYearAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
+import { useCopyToClipboard } from 'react-use';
 
 export function EmbedCodeModal() {
     const { username } = useParams<{ username: string }>();
+
+    const [copied, setCopied] = useState(false);
 
     const {
         hideColorLegend,
@@ -46,6 +49,16 @@ export function EmbedCodeModal() {
         ]
     );
 
+    const [_, copyToClipboard] = useCopyToClipboard();
+
+    const handleCopy = useCallback(() => {
+        copyToClipboard(embedString);
+        setCopied(true);
+        setTimeout(() => {
+            setCopied(false);
+        }, 2000);
+    }, [copyToClipboard, embedString]);
+
     return (
         <Dialog.Root>
             <Dialog.Trigger asChild>
@@ -58,7 +71,21 @@ export function EmbedCodeModal() {
                         <Stack gap='4'>
                             <Dialog.Title>Embed Code</Dialog.Title>
                             <Dialog.Description p={3} bg='background' borderRadius='l3'>
-                                <code className={css({ bg: 'transparent' })}>{embedString}</code>
+                                <Stack>
+                                    <code className={css({ maxWidth: '100%', bg: 'transparent' })}>
+                                        {embedString}
+                                    </code>
+                                    <Button
+                                        data-state={copied ? 'copied' : 'not-copied'}
+                                        className={css({
+                                            '&[data-state=copied]': { pointerEvents: 'none' },
+                                        })}
+                                        variant={!copied ? 'ghost' : 'solid'}
+                                        onClick={handleCopy}
+                                    >
+                                        {copied ? 'Copied!' : 'Copy to Clipboard'}
+                                    </Button>
+                                </Stack>
                             </Dialog.Description>
                         </Stack>
                     </Stack>

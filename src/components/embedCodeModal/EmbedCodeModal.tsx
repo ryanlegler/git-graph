@@ -75,16 +75,16 @@ export function EmbedCodeModal() {
                                     <code className={css({ maxWidth: '100%', bg: 'transparent' })}>
                                         {embedString}
                                     </code>
-                                    <Button
-                                        data-state={copied ? 'copied' : 'not-copied'}
-                                        className={css({
-                                            '&[data-state=copied]': { pointerEvents: 'none' },
-                                        })}
-                                        variant={!copied ? 'ghost' : 'solid'}
-                                        onClick={handleCopy}
-                                    >
-                                        {copied ? 'Copied!' : 'Copy to Clipboard'}
-                                    </Button>
+
+                                    {copied ? (
+                                        <Button className={css({ bg: 'github.300' })}>
+                                            ✅ Copied!
+                                        </Button>
+                                    ) : (
+                                        <Button variant='ghost' onClick={handleCopy}>
+                                            💾 Copy to Clipboard
+                                        </Button>
+                                    )}
                                 </Stack>
                             </Dialog.Description>
                         </Stack>

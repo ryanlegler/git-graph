@@ -93,14 +93,17 @@ export function Controls({ availableYears, username }: ControlsProps) {
                                         Show Weekday Labels
                                     </Switch>
                                     <Switch
-                                        checked={colorScheme === 'light' ? false : true}
+                                        checked={colorScheme === 'light' ? true : false}
                                         onCheckedChange={() => {
-                                            setTheme(colorScheme as string);
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                colorScheme:
-                                                    prev.colorScheme === 'dark' ? 'light' : 'dark',
-                                            }));
+                                            setControlsOptions((prev) => {
+                                                const newColorScheme =
+                                                    prev.colorScheme === 'light' ? 'dark' : 'light';
+                                                setTheme(newColorScheme);
+                                                return {
+                                                    ...prev,
+                                                    colorScheme: newColorScheme,
+                                                };
+                                            });
                                         }}
                                     >
                                         Light Mode

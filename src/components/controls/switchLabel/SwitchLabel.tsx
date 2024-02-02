@@ -6,7 +6,6 @@ export function SwitchLabel({ children }: SwitchLabelProps) {
         <span
             className={css({
                 fontSize: 'md',
-                color: 'white',
             })}
         >
             {children}

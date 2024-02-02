@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Flex } from 'styled-system/jsx/flex';
 import { Box, Grid } from 'styled-system/jsx';
+import { useTheme } from 'next-themes';
 
 // components
 import { Button } from '@components/ui/button';
@@ -27,6 +28,7 @@ export function Controls({ availableYears, username }: ControlsProps) {
     const [controlsOptions, setControlsOptions] = useAtom(optionsAtom);
     const [showControls, setShowControls] = useAtom(controlsVisibilityAtom);
     const [selectedYear, setSelectedYear] = useAtom(selectedYearAtom);
+    const { theme, setTheme } = useTheme();
 
     const {
         hideColorLegend,
@@ -43,8 +45,6 @@ export function Controls({ availableYears, username }: ControlsProps) {
     } = controlsOptions;
 
     const weekStartString = useDayString(weekStart as Day);
-
-    const useLightMode = colorScheme === 'light' ? 'light' : 'dark';
 
     const handleSetBooleanOption = useCallback(
         (key: keyof ActivityCalendarConfigProps) => {
@@ -93,8 +93,9 @@ export function Controls({ availableYears, username }: ControlsProps) {
                                         Show Weekday Labels
                                     </Switch>
                                     <Switch
-                                        checked={useLightMode === 'dark' ? false : true}
+                                        checked={colorScheme === 'light' ? false : true}
                                         onCheckedChange={() => {
+                                            setTheme(colorScheme as string);
                                             setControlsOptions((prev) => ({
                                                 ...prev,
                                                 colorScheme:

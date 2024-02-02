@@ -20,10 +20,12 @@
         "lodash": "^4.17.21",
         "lucide-react": "^0.312.0",
         "next": "14.0.4",
+        "next-themes": "^0.2.1",
         "react": "18.2.0",
         "react-activity-calendar": "^2.2.6",
         "react-dom": "18.2.0",
         "react-github-calendar": "^4.0.8",
+        "react-use": "^17.5.0",
         "tsconfig-paths-webpack-plugin": "^4.1.0",
         "zod": "^3.22.4",
         "zod-form-data": "^2.0.2"

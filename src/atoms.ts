@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 
 import { ActivityCalendarConfigProps } from './components/controls/types';
+import { Dimensions } from './components/graphList/GraphListMeasure';
 export const hideColorLegendAtom = atom<boolean>(false);
 
 export const OPTIONS_DEFAULTS: ActivityCalendarConfigProps = {
@@ -21,3 +22,4 @@ export const optionsAtom = atom<ActivityCalendarConfigProps>(OPTIONS_DEFAULTS);
 export const controlsVisibilityAtom = atom<boolean>(false);
 
 export const selectedYearAtom = atom<number>(new Date().getFullYear());
+export const dimensionsAtom = atom<Dimensions>({ height: 0, width: 0 });

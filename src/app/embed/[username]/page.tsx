@@ -21,7 +21,6 @@ export type SearchParamOptions = {
 
 type UsersPageProps = PageProps & {
     searchParams: SearchParamOptions;
-    // need to type all the other searchParams here
 };
 
 export default async function UserPage({ params: { username }, searchParams }: UsersPageProps) {

@@ -1,7 +1,7 @@
 'use client';
 
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
+import { LegacyRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { css } from 'styled-system/css';
 import { useAtom, useAtomValue } from 'jotai/react';
@@ -9,6 +9,7 @@ import { optionsAtom, selectedYearAtom } from '@/atoms';
 import ActivityCalendar from 'react-activity-calendar';
 import { StyledFlex } from '@components/ui/flex';
 import { GraphListProps } from './types';
+import { useMeasure } from 'react-use';
 
 export function GraphList({
     username,

@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
 import { useParams } from 'next/navigation';
-import { optionsAtom, selectedYearAtom } from '@/atoms';
+import { dimensionsAtom, optionsAtom, selectedYearAtom } from '@/atoms';
 import { useAtomValue } from 'jotai';
 import { useCopyToClipboard } from 'react-use';
 
@@ -29,15 +29,18 @@ export function EmbedCodeModal() {
     } = useAtomValue(optionsAtom);
 
     const years = useAtomValue(selectedYearAtom);
+    const dimensions = useAtomValue(dimensionsAtom);
 
+
+    // &colorScheme=${colorScheme}
     const embedString = useMemo(
         () =>
-            `<iframe height="800px" width="100%" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&colorScheme=${colorScheme}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${years}"></iframe>`,
+            `<iframe frameBorder="0" height="${dimensions.height}px" width="${dimensions.width}px" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${years}"></iframe>`,
         [
             hideColorLegend,
             username,
             showWeekdayLabels,
-            colorScheme,
+            // colorScheme,
             hideMonthLabels,
             hideTotalCount,
             blockMargin,
@@ -46,6 +49,7 @@ export function EmbedCodeModal() {
             fontSize,
             weekStart,
             years,
+            dimensions,
         ]
     );
 

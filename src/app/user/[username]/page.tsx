@@ -3,10 +3,10 @@ import { getProfile } from '@/dataLayer/getProfile';
 import { StyledFlex } from '@/components/ui/flex';
 import { Controls } from '@/components/controls';
 import { getContributions } from '@/dataLayer/getContributions';
-import { Suspense } from 'react';
 import { PageProps } from '@/app/types';
 import { getYears } from '@/components/graphList/utils/getYears';
 import { YearsAtomProvider } from '../YearsAtomProvider';
+import { GraphListMeasure } from '@/components/graphList/GraphListMeasure';
 
 export async function generateMetadata({ params }: PageProps) {
     return {
@@ -24,7 +24,7 @@ export default async function UserPage({ params: { username } }: { params: { use
         <StyledFlex direction='vertical' hAlign='center'>
             <YearsAtomProvider initialYear={currentYear}>
                 <Controls availableYears={availableYears} username={username} />
-                <Suspense fallback={<div>loading...</div>}>
+                <GraphListMeasure>
                     <GraphList
                         shouldResetYear
                         currentYear={currentYear}
@@ -32,7 +32,7 @@ export default async function UserPage({ params: { username } }: { params: { use
                         username={username}
                         avatarUrl={profile.avatar_url}
                     />
-                </Suspense>
+                </GraphListMeasure>
             </YearsAtomProvider>
         </StyledFlex>
     );

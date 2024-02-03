@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { Flex } from 'styled-system/jsx/flex';
 import { Box, Grid } from 'styled-system/jsx';
-import { useTheme } from 'next-themes';
+// import { useTheme } from 'next-themes';
 
 // components
 import { Button } from '@components/ui/button';
@@ -28,7 +28,7 @@ export function Controls({ availableYears, username }: ControlsProps) {
     const [controlsOptions, setControlsOptions] = useAtom(optionsAtom);
     const [showControls, setShowControls] = useAtom(controlsVisibilityAtom);
     const [selectedYear, setSelectedYear] = useAtom(selectedYearAtom);
-    const { theme, setTheme } = useTheme();
+    // const { theme, setTheme } = useTheme();
 
     const {
         hideColorLegend,
@@ -92,7 +92,7 @@ export function Controls({ availableYears, username }: ControlsProps) {
                                     >
                                         Show Weekday Labels
                                     </Switch>
-                                    <Switch
+                                    {/* <Switch
                                         checked={colorScheme === 'light' ? true : false}
                                         onCheckedChange={() => {
                                             setControlsOptions((prev) => {
@@ -107,7 +107,7 @@ export function Controls({ availableYears, username }: ControlsProps) {
                                         }}
                                     >
                                         Light Mode
-                                    </Switch>
+                                    </Switch> */}
                                     <Switch
                                         checked={hideColorLegend}
                                         onCheckedChange={(e) => {

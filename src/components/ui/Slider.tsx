@@ -1,54 +1,28 @@
-import { Slider as ArkSlider, type SliderProps as ArkSliderProps } from '@ark-ui/react/slider';
-import { forwardRef, type ReactNode } from 'react';
-import { css, cx } from 'styled-system/css';
-import { slider, type SliderVariantProps } from 'styled-system/recipes';
-import type { Assign, JsxStyleProps } from 'styled-system/types';
+"use client"
 
-export interface SliderProps extends Assign<JsxStyleProps, ArkSliderProps>, SliderVariantProps {
-    children?: ReactNode;
-    marks?: {
-        value: number;
-        label?: ReactNode;
-    }[];
-}
+import * as React from "react"
+import * as SliderPrimitive from "@radix-ui/react-slider"
 
-export const Slider = forwardRef<HTMLDivElement, SliderProps>((props, ref) => {
-    const [variantProps, sliderProps] = slider.splitVariantProps(props);
-    const { children, ...rootProps } = sliderProps;
-    const styles = slider(variantProps);
+import { cn } from "@/lib/utils"
 
-    return (
-        <ArkSlider.Root className={cx(styles.root, css(rootProps))} {...rootProps}>
-            {(api) => (
-                <>
-                    {children && (
-                        <ArkSlider.Label className={styles.label}>{children}</ArkSlider.Label>
-                    )}
-                    <ArkSlider.Control className={styles.control}>
-                        <ArkSlider.Track className={styles.track}>
-                            <ArkSlider.Range className={styles.range} />
-                        </ArkSlider.Track>
-                        {api.value.map((_, index) => (
-                            <ArkSlider.Thumb key={index} index={index} className={styles.thumb} />
-                        ))}
-                    </ArkSlider.Control>
-                    {props.marks && (
-                        <ArkSlider.MarkerGroup className={styles.markerGroup}>
-                            {props.marks.map((mark) => (
-                                <ArkSlider.Marker
-                                    key={mark.value}
-                                    value={mark.value}
-                                    className={styles.marker}
-                                >
-                                    {mark.label}
-                                </ArkSlider.Marker>
-                            ))}
-                        </ArkSlider.MarkerGroup>
-                    )}
-                </>
-            )}
-        </ArkSlider.Root>
-    );
-});
+const Slider = React.forwardRef<
+  React.ElementRef<typeof SliderPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <SliderPrimitive.Root
+    ref={ref}
+    className={cn(
+      "relative flex w-full touch-none select-none items-center",
+      className
+    )}
+    {...props}
+  >
+    <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20">
+      <SliderPrimitive.Range className="absolute h-full bg-primary" />
+    </SliderPrimitive.Track>
+    <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50" />
+  </SliderPrimitive.Root>
+))
+Slider.displayName = SliderPrimitive.Root.displayName
 
-Slider.displayName = 'Slider';
+export { Slider }

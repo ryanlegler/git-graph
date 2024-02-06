@@ -1,36 +1,13 @@
-import { StyledFlex } from '@/components/ui/flex';
-import { UserNameInput } from '@/components/userNameInput/UserNameInput';
+import { Builder } from "@/components/builder";
+import { getContributions } from "@/dataLayer/getContributions";
 
-import { css } from 'styled-system/css';
+export default async function Home({
+    searchParams,
+}: {
+    searchParams: { userName: string; year: string };
+}) {
+    const { userName, year } = searchParams || {};
+    const data = await getContributions({ userName, year });
 
-export default function Home() {
-    return (
-        <StyledFlex
-            direction='vertical'
-            hAlign='center'
-            vAlign='middle'
-            gap={4}
-            className={css({
-                h: '100vh',
-            })}
-        >
-            <span
-                className={css({
-                    fontSize: 100,
-                })}
-            >
-                🐙
-            </span>
-            <h1
-                className={css({
-                    fontSize: 40,
-                    fontWeight: 900,
-                })}
-            >
-                Git Graph
-            </h1>
-
-            <UserNameInput />
-        </StyledFlex>
-    );
+    return <Builder userName={userName} data={data} />;
 }

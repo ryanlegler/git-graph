@@ -1,3 +1,3 @@
-import { ControlsProps } from "../controls/types";
+import { ControlsProps } from '../controls/types';
 
-export type ControlBarProps = ControlsProps;
+export type ControlBarProps = ControlsProps & { dimensions: { width: number; height: number } };

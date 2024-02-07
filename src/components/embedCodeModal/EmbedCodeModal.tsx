@@ -17,7 +17,7 @@ export function EmbedCodeModal({
     year,
 }: {
     options?: any;
-    dimensions?: any;
+    dimensions?: { width: number; height: number };
     year?: any;
 }) {
     const { username } = useParams<{ username: string }>();

@@ -1,19 +1,23 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 
 // types
-import { ControlsProps } from "./types";
+import { ControlsProps } from './types';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useWatch } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import { Options } from '@/types';
+import { SwitchControl } from './switchControl';
+import { SliderControl } from './sliderControl';
 
-import { Slider } from "@/components/ui/slider";
-
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
-import { Form } from "@/components/ui/form";
-import { Label } from "../ui/label";
-import { Options } from "@/types";
-import { SwitchControl } from "./switchControl";
-import { SliderControl } from "./sliderControl";
-import { Button } from "../ui/button";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
     showWeekdayLabels: z.boolean().default(false),
@@ -25,12 +29,15 @@ const FormSchema = z.object({
     blockSize: z.number().default(12),
     fontSize: z.number().default(14),
     weekStart: z.number().default(0),
-    colorScheme: z.enum(["dark", "light"]).default("dark"),
+    colorScheme: z.enum(['dark', 'light']).default('dark'),
 });
 
 // type InferredOptions = z.infer<typeof FormSchema>;
 
-function Controls({ options, onChange }: ControlsProps) {
+function Controls({ options, onChange, userName }: ControlsProps) {
+    const router = useRouter();
+    const [years, setYears] = useState([]);
+    const [year, setYear] = useState<string>();
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: options,
@@ -44,26 +51,65 @@ function Controls({ options, onChange }: ControlsProps) {
         onChange?.(all);
     }, [all, onChange]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`/api/getYears/${userName}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+            setYears(data.map((year: number) => year.toString()));
+        };
+
+        fetchData();
+    }, [userName]);
+
+    const onYearChange = useCallback(
+        (value: string) => {
+            setYear(value);
+            router.push(`/?userName=${userName}&year=${value}`); // year needs to be dynamic - will need to fetch
+        },
+        [router, userName]
+    );
+
     return (
-        <Form {...form} data-testid="controls">
-            <h2>Controls</h2>
-            <form>
-                <div className="grid grid-cols-2 gap-5 debug">
-                    <div className="flex gap-2 flex-col debug ">
-                        <SwitchControl form={form} formKey="showWeekdayLabels" />
-                        <SwitchControl form={form} formKey="hideColorLegend" />
-                        <SwitchControl form={form} formKey="hideMonthLabels" />
-                        <SwitchControl form={form} formKey="hideTotalCount" />
+        <Form {...form} data-testid='controls'>
+            <div className='bg-black p-5 pb-8 rounded-2xl flex gap-5 flex-col'>
+                <h2 className='text-2xl font-bold'>Controls</h2>
+                <form>
+                    <div className='grid grid-cols-2 gap-7'>
+                        <div className='flex gap-5 flex-col '>
+                            <Select onValueChange={onYearChange} defaultValue={year}>
+                                <SelectTrigger className='w-[180px]'>
+                                    <SelectValue placeholder='Choose a Year' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {years.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                            {year}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <SwitchControl form={form} formKey='showWeekdayLabels' />
+                            <SwitchControl form={form} formKey='hideColorLegend' />
+                            <SwitchControl form={form} formKey='hideMonthLabels' />
+                            <SwitchControl form={form} formKey='hideTotalCount' />
+                        </div>
+                        <div className='flex gap-5 flex-col'>
+                            <SliderControl form={form} formKey='blockMargin' min={2} max={20} />
+                            <SliderControl form={form} formKey='blockRadius' min={2} max={20} />
+                            <SliderControl form={form} formKey='blockSize' min={2} max={20} />
+                            <SliderControl form={form} formKey='fontSize' min={6} max={32} />
+                            <SliderControl form={form} formKey='weekStart' min={0} max={6} />
+                        </div>
                     </div>
-                    <div className="flex gap-2 flex-col debug">
-                        <SliderControl form={form} formKey="blockMargin" min={2} max={20} />
-                        <SliderControl form={form} formKey="blockRadius" min={2} max={20} />
-                        <SliderControl form={form} formKey="blockSize" min={2} max={20} />
-                        <SliderControl form={form} formKey="fontSize" min={6} max={32} />
-                        <SliderControl form={form} formKey="weekStart" min={0} max={6} />
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </Form>
     );
 }

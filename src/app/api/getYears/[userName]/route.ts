@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 
+// I should just use this to get all the data - put it up front and then filter it on the client side
 export async function GET(_: NextRequest, { params }: any) {
     try {
         const { userName } = params;

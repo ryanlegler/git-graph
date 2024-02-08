@@ -1,5 +1,5 @@
-import { Builder } from "@/components/builder";
-import { getContributions } from "@/dataLayer/getContributions";
+import { Builder } from '@/components/builder';
+import { getContributions } from '@/dataLayer/getContributions';
 
 export default async function Home({
     searchParams,
@@ -7,7 +7,8 @@ export default async function Home({
     searchParams: { userName: string; year: string };
 }) {
     const { userName, year } = searchParams || {};
-    const data = await getContributions({ userName, year });
+    const resolvedYear = year || new Date().getFullYear().toString();
+    const data = await getContributions({ userName, year: resolvedYear });
 
-    return <Builder userName={userName} data={data} />;
+    return <Builder userName={userName} data={data} year={year} />;
 }

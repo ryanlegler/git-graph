@@ -1,5 +1,5 @@
 'use client';
-import React, { LegacyRef, useCallback, useMemo, useState } from 'react';
+import React, { LegacyRef, Suspense, useCallback, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 
 // types
@@ -12,12 +12,14 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useMeasure } from 'react-use';
 
-function Builder({ userName, data }: BuilderProps) {
+function Builder({ userName, year, data }: BuilderProps) {
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
 
     const active = !!userName;
     const [pendingUserName, setPendingUserName] = useState('');
+
+    const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState<Options>({
         hideColorLegend: false,
         showWeekdayLabels: true,
@@ -39,10 +41,14 @@ function Builder({ userName, data }: BuilderProps) {
     }, []);
 
     const onSubmit = useCallback(() => {
-        // could do server action validation here
+        // we now assume the current year is valid...
+        // the idea with some of this refactor is to fetch as little data up front as possible.
+        // previously we fetched all the users contributions before showing anything.
+        // now we just fetch the contributions for the current year and then fetch the rest as needed.
 
         if (!!pendingUserName) {
-            router.push(`/?userName=${pendingUserName}&year=2024`); // year needs to be dynamic - will need to fetch
+            // router.push(`/?userName=${pendingUserName}&year=${year}`); // year needs to be dynamic - will need to fetch
+            router.push(`/?userName=${pendingUserName}`); // we don't know the actual year yet. - we assume it's the current year
         }
     }, [pendingUserName, router]);
 
@@ -61,10 +67,15 @@ function Builder({ userName, data }: BuilderProps) {
             {active ? (
                 <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                     <Header userName={userName} />
+
                     <div ref={ref as LegacyRef<HTMLDivElement>}>
-                        <Graph data={data} options={options} />
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Graph data={data} options={options} />
+                        </Suspense>
                     </div>
+
                     <ControlBar
+                        year={year}
                         userName={userName}
                         options={options}
                         onChange={handleOnChange}

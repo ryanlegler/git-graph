@@ -18,8 +18,9 @@ export function EmbedCodeModal({
 }: {
     options?: any;
     dimensions?: { width: number; height: number };
-    year?: any;
+    year: string;
 }) {
+    const resolvedYear = year || new Date().getFullYear().toString();
     const { username } = useParams<{ username: string }>();
     const [copied, setCopied] = useState(false);
 
@@ -37,7 +38,7 @@ export function EmbedCodeModal({
 
     const embedString = useMemo(
         () =>
-            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${year}"></iframe>`,
+            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${resolvedYear}"></iframe>`,
         [
             hideColorLegend,
             username,
@@ -49,7 +50,7 @@ export function EmbedCodeModal({
             blockSize,
             fontSize,
             weekStart,
-            year,
+            resolvedYear,
             dimensions,
         ]
     );

@@ -9,7 +9,7 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { EmbedCodeModal } from '../embedCodeModal';
 import { Controls } from '../controls';
 
-function ControlBar({ options, onChange, dimensions, userName }: ControlBarProps) {
+function ControlBar({ options, onChange, dimensions, userName, year }: ControlBarProps) {
     const [controlsOpen, setControlsOpen] = useState(false);
 
     const handleToggleControls = useCallback(() => {
@@ -19,7 +19,7 @@ function ControlBar({ options, onChange, dimensions, userName }: ControlBarProps
     return (
         <div data-testid='control-bar' className='flex flex-col gap-4 min-w-[900px] max-w-[1500px]'>
             {controlsOpen ? (
-                <Controls userName={userName} options={options} onChange={onChange} />
+                <Controls userName={userName} options={options} onChange={onChange} year={year} />
             ) : null}
 
             <div className='flex justify-center gap-4'>
@@ -30,7 +30,7 @@ function ControlBar({ options, onChange, dimensions, userName }: ControlBarProps
                             <DialogTrigger>
                                 <Button variant='secondary'>Get Embed</Button>
                             </DialogTrigger>
-                            <EmbedCodeModal options={options} dimensions={dimensions} />
+                            <EmbedCodeModal year={year} options={options} dimensions={dimensions} />
                         </Dialog>
                     </Client>
                     <Server>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useState } from 'react';
 
 // types
 import { ControlsProps } from './types';
@@ -34,14 +34,24 @@ const FormSchema = z.object({
 
 // type InferredOptions = z.infer<typeof FormSchema>;
 
-function Controls({ options, onChange, userName }: ControlsProps) {
+function Controls({ options, onChange, userName, year: initialYear }: ControlsProps) {
     const router = useRouter();
-    const [years, setYears] = useState([]);
-    const [year, setYear] = useState<string>();
+    const [years, setYears] = useState<string[]>([]);
+    const currentYear = new Date().getFullYear().toString();
+    const [year, setYear] = useState<string>(initialYear || currentYear);
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: options,
     });
+
+    // this set the year if the the current year is not in the list of years
+    useEffect(() => {
+        const noYear = !initialYear && years.includes(currentYear);
+
+        if (noYear) {
+            router.push(`/?userName=${userName}&year=${years[0]}`); // year needs to be dynamic - will need to fetch
+        }
+    }, [currentYear, initialYear, router, userName, years]);
 
     const all = useWatch({
         control: form.control,
@@ -61,7 +71,9 @@ function Controls({ options, onChange, userName }: ControlsProps) {
             });
 
             const data = await response.json();
-            setYears(data.map((year: number) => year.toString()));
+
+            const resolvedYears: string[] = data.map((year: number) => year.toString());
+            setYears(resolvedYears);
         };
 
         fetchData();

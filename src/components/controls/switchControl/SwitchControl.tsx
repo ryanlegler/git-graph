@@ -2,7 +2,7 @@ import React from 'react';
 import { FormField, FormItem } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import { SwitchControlProps } from './types';
-import { Switch } from '@/components/ui/Switch';
+import { Switch } from '@/components/ui/switch';
 
 function SwitchControl({ form, formKey }: SwitchControlProps) {
     return (

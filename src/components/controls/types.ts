@@ -4,4 +4,5 @@ export type ControlsProps = {
     options: Options;
     onChange: (options: Options) => void;
     userName: string;
+    year: string;
 };

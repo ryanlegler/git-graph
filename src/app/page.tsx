@@ -10,5 +10,5 @@ export default async function Home({
     const resolvedYear = year || new Date().getFullYear().toString();
     const data = await getContributions({ userName, year: resolvedYear });
 
-    return <Builder userName={userName} data={data} year={year} />;
+    return <Builder userName={userName} data={userName ? data : undefined} year={year} />;
 }

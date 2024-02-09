@@ -9,18 +9,45 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { EmbedCodeModal } from '../embedCodeModal';
 import { Controls } from '../controls';
 
-function ControlBar({ options, onChange, dimensions, userName, year }: ControlBarProps) {
-    const [controlsOpen, setControlsOpen] = useState(false);
+import { motion, AnimatePresence } from 'framer-motion';
 
+function ControlBar({
+    options,
+    onChange,
+    dimensions,
+    userName,
+    year,
+    setSelectedYear,
+    setControlsOpen,
+    controlsOpen,
+}: ControlBarProps) {
     const handleToggleControls = useCallback(() => {
         setControlsOpen((prev) => !prev);
     }, []);
 
     return (
-        <div data-testid='control-bar' className='flex flex-col gap-4 min-w-[900px] max-w-[1500px]'>
-            {controlsOpen ? (
-                <Controls userName={userName} options={options} onChange={onChange} year={year} />
-            ) : null}
+        <div
+            data-testid='control-bar'
+            className='flex flex-col gap-4 min-w-[900px] max-w-[1500px] relative'
+        >
+            <AnimatePresence>
+                {controlsOpen ? (
+                    <motion.div
+                        className='absolute bottom-12 left-0 right-0'
+                        initial={{ opacity: 0, translateY: '20px' }}
+                        animate={{ opacity: 1, translateY: '0px' }}
+                        exit={{ opacity: 0, translateY: '20px' }}
+                    >
+                        <Controls
+                            setSelectedYear={setSelectedYear}
+                            userName={userName}
+                            options={options}
+                            onChange={onChange}
+                            year={year}
+                        />
+                    </motion.div>
+                ) : null}
+            </AnimatePresence>
 
             <div className='flex justify-center gap-4'>
                 <Button onClick={handleToggleControls}>Customize</Button>

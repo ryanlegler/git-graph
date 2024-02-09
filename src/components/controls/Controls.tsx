@@ -1,4 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react';
+// type InferredOptions = z.infer<typeof FormSchema>;
 
 // types
 import { ControlsProps } from './types';
@@ -32,9 +33,13 @@ const FormSchema = z.object({
     colorScheme: z.enum(['dark', 'light']).default('dark'),
 });
 
-// type InferredOptions = z.infer<typeof FormSchema>;
-
-function Controls({ options, onChange, userName, year: initialYear }: ControlsProps) {
+function Controls({
+    options,
+    onChange,
+    userName,
+    year: initialYear,
+    setSelectedYear,
+}: ControlsProps) {
     const router = useRouter();
     const [years, setYears] = useState<string[]>([]);
     const currentYear = new Date().getFullYear().toString();
@@ -47,20 +52,21 @@ function Controls({ options, onChange, userName, year: initialYear }: ControlsPr
     // this set the year if the the current year is not in the list of years
     useEffect(() => {
         const noYear = !initialYear && years.includes(currentYear);
-
         if (noYear) {
             router.push(`/?userName=${userName}&year=${years[0]}`); // year needs to be dynamic - will need to fetch
         }
     }, [currentYear, initialYear, router, userName, years]);
 
+    // this was some weird thing with react-hook-form
     const all = useWatch({
         control: form.control,
     }) as Options;
-
     useEffect(() => {
         onChange?.(all);
     }, [all, onChange]);
 
+    // could probably use a server action here
+    // or find a way to compose this as a server component
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`/api/getYears/${userName}`, {
@@ -81,10 +87,11 @@ function Controls({ options, onChange, userName, year: initialYear }: ControlsPr
 
     const onYearChange = useCallback(
         (value: string) => {
-            setYear(value);
+            setYear(value); // sets the local year - could consolidate to just use setSelectedYear
+            setSelectedYear(value); // sets the year in the parent
             router.push(`/?userName=${userName}&year=${value}`); // year needs to be dynamic - will need to fetch
         },
-        [router, userName]
+        [router, setSelectedYear, userName]
     );
 
     return (

@@ -27,7 +27,8 @@ const config = {
                 ['github.500']: '#3AD353',
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',
-                ring: 'hsl(var(--ring))',
+                darkBackground: '#0D1116',
+                ring: '#27A641',
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 primary: {
@@ -43,7 +44,7 @@ const config = {
                     foreground: 'hsl(var(--destructive-foreground))',
                 },
                 muted: {
-                    DEFAULT: 'hsl(var(--muted))',
+                    DEFAULT: '#A4A4A4',
                     foreground: 'hsl(var(--muted-foreground))',
                 },
                 accent: {

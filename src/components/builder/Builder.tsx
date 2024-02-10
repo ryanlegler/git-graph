@@ -28,17 +28,28 @@ function Builder({ userName, year, data }: BuilderProps) {
     // know we are loading if we have a year from the year switcher that doesn't match the year coming in from params
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
-    // this keeps track of when we have used the year switcher and are waiting for the new year to load from the root server component
-    const [isLoadingYear, setIsLoadingYear] = useState(false);
+    const [controlsOpen, setControlsOpen] = useState(false);
 
-    useEffect(() => {
+    // // this keeps track of when we have used the year switcher and are waiting for the new year to load from the root server component
+    // const [isLoadingYear, setIsLoadingYear] = useState(false);
+    // useEffect(() => {
+    //     // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
+    //     if (year && selectedYear && selectedYear !== year) {
+    //         setIsLoadingYear(true);
+    //     } else {
+    //         setIsLoadingYear(false);
+    //     }
+    // }, [selectedYear, router, userName, year]);
+
+    // should be need for state
+    const isLoadingYear = useMemo(() => {
         // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
         if (year && selectedYear && selectedYear !== year) {
-            setIsLoadingYear(true);
+            return true;
         } else {
-            setIsLoadingYear(false);
+            return false;
         }
-    }, [selectedYear, router, userName, year]);
+    }, [selectedYear, year]);
 
     useEffect(() => {
         if (data && !data.length) {
@@ -93,19 +104,17 @@ function Builder({ userName, year, data }: BuilderProps) {
         setSelectedYear(year);
     }, []);
 
-    const [controlsOpen, setControlsOpen] = useState(false);
-
     return (
         <main
             data-testid='builder'
-            className='bg-slate-900 flex min-h-screen flex-col items-center py-[100px] justify-center'
+            className='flex min-h-screen flex-col items-center py-[100px] justify-center bg-darkBackground'
         >
-            {data?.length ? (
-                <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
-                    <Header userName={userName} setSelectedYear={setSelectedYear} />
+            <AnimatePresence>
+                {data?.length ? (
+                    <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
+                        <Header userName={userName} setSelectedYear={setSelectedYear} />
 
-                    <div ref={ref as LegacyRef<HTMLDivElement>}>
-                        <AnimatePresence>
+                        <div ref={ref as LegacyRef<HTMLDivElement>}>
                             <motion.div
                                 initial={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
                                 animate={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
@@ -121,6 +130,7 @@ function Builder({ userName, year, data }: BuilderProps) {
                                     </motion.div>
                                 ) : (
                                     <motion.div
+                                        transition={{ delay: 0.3 }}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
@@ -129,48 +139,74 @@ function Builder({ userName, year, data }: BuilderProps) {
                                     </motion.div>
                                 )}
                             </motion.div>
-                        </AnimatePresence>
-                    </div>
+                        </div>
 
-                    <ControlBar
-                        controlsOpen={controlsOpen}
-                        setControlsOpen={setControlsOpen}
-                        year={year}
-                        userName={userName}
-                        options={options}
-                        onChange={handleOnChange}
-                        dimensions={dimensions}
-                        setSelectedYear={handleSetSelectedYear}
-                    />
-                </div>
-            ) : (
-                <div className='flex flex-col gap-4 items-center'>
-                    <div className='text-8xl'>🐙</div>
-                    <div className='flex w-full max-w-sm items-center space-x-2'>
-                        <Input
-                            type='text'
-                            name='userName'
-                            placeholder='GitHub User Name'
-                            onChange={handleInputOnChange}
+                        <ControlBar
+                            controlsOpen={controlsOpen}
+                            setControlsOpen={setControlsOpen}
+                            year={year}
+                            userName={userName}
+                            options={options}
+                            onChange={handleOnChange}
+                            dimensions={dimensions}
+                            setSelectedYear={handleSetSelectedYear}
                         />
-
-                        <Button type='submit' onClick={onSubmit}>
-                            Submit
-                        </Button>
                     </div>
-                    <AnimatePresence>
-                        {clientErrorMessage ? (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            >
-                                <div className='text-red-500 text-sm'>{clientErrorMessage}</div>
-                            </motion.div>
-                        ) : null}
-                    </AnimatePresence>
-                </div>
-            )}
+                ) : null}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {!data?.length ? (
+                    <div className='absolute flex flex-col gap-10 items-center'>
+                        <motion.div
+                            className='flex flex-col gap-10 items-center'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, translateY: '-50px' }}
+                        >
+                            <div className='text-8xl'>🐙</div>
+                            <div className='flex flex-col gap-4 items-center'>
+                                <h1 className='text-5xl font-semibold'>Git Graph</h1>
+                                <div className='text-center text-lg text-muted max-w-3xl leading-snug antialiased'>
+                                    Get a personal view of your Github contribution history in just
+                                    a few clicks. Customize the look and feel as you see fit, and
+                                    embed it on your site in just a few clicks.
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            className='flex flex-col gap-10 items-center'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, translateY: '50px' }}
+                        >
+                            <div className='flex w-full max-w-sm items-center space-x-2'>
+                                <Input
+                                    type='text'
+                                    name='userName'
+                                    placeholder='GitHub User Name'
+                                    onChange={handleInputOnChange}
+                                />
+
+                                <Button type='submit' onClick={onSubmit}>
+                                    Submit
+                                </Button>
+                            </div>
+
+                            {clientErrorMessage ? (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                >
+                                    <div className='text-red-500 text-sm'>{clientErrorMessage}</div>
+                                </motion.div>
+                            ) : null}
+                        </motion.div>
+                    </div>
+                ) : null}
+            </AnimatePresence>
         </main>
     );
 }

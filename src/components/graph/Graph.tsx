@@ -4,18 +4,17 @@ import ActivityCalendar, { Activity } from 'react-activity-calendar';
 import { Options } from '@/types';
 
 export function Graph({ data, options }: { data?: Activity[]; options?: Options }) {
-    const colorScaleDark = ['#00429d', '#1f58a6', '#376ead', '#ffa59e', '#dd4c65'];
-    const colorScaleLight = ['#f9ed69', '#f08a5d', '#b83b5e', '#6a2c70', '#3c1642'];
-
+    const colorScale = ['#161B22', '#0D4429', '#016D32', '#27A641', '#3AD353'];
     return (
-        <div className='p-3 bg-black rounded'>
+        <div className='p-3 bg-background rounded'>
             <HydrationProvider>
                 <Client>
-                    <ActivityCalendar
-                        theme={{ light: colorScaleLight, dark: colorScaleDark }}
+                    <div className='flex bg-slate-700 w-[800px] h-[200px] rounded-lg' />
+                    {/* <ActivityCalendar
+                        theme={{ light: colorScale, dark: colorScale }}
                         data={data || []}
                         {...options}
-                    />
+                    /> */}
                 </Client>
             </HydrationProvider>
         </div>

@@ -13,13 +13,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 function ControlBar({
     options,
-    onChange,
     dimensions,
     userName,
+    controlsOpen,
     year,
+    onChange,
     setSelectedYear,
     setControlsOpen,
-    controlsOpen,
 }: ControlBarProps) {
     const handleToggleControls = useCallback(() => {
         setControlsOpen((prev) => !prev);

@@ -1,18 +1,17 @@
 'use client';
 import React, { useCallback } from 'react';
-import Link from 'next/link';
+
 // types
 import { HeaderProps } from './types';
 import { useRouter } from 'next/navigation';
 
-// TODO - style this
 function Header({ userName, setSelectedYear }: HeaderProps) {
     const router = useRouter();
-
     const handleClickHome = useCallback(() => {
         setSelectedYear(null); // clear out the state for the year
         router.push(`/`);
     }, [router, setSelectedYear]);
+
     return (
         <header data-testid='header'>
             <div

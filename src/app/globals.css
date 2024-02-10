@@ -33,6 +33,10 @@
         --ring: 20 14.3% 4.1%;
 
         --radius: 0.5rem;
+
+        /* // could use these instead of the transform origin */
+        --x: 50%;
+        --y: 50%;
     }
 
     .dark {
@@ -70,7 +74,13 @@
     * {
         @apply border-border;
     }
+    body,
+    html {
+        height: 100vh;
+    }
     body {
+        overflow: hidden;
+
         @apply bg-background text-foreground;
     }
 }
@@ -78,5 +88,41 @@
 @layer components {
     .debug {
         @apply outline-[magenta] outline-1 outline;
+    }
+
+    .spotlight {
+        transform: scale(2);
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: radial-gradient(
+            circle,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.7) 48%,
+            rgba(0, 0, 0, 1) 100%
+        );
+    }
+    /* .spotlight {
+        transform: scale(2.5) scaleY(0.7);
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: radial-gradient(
+            circle at var(--x, 50%) var(--y, 50%),
+            hsl(0, 0%, 100%) 20%,
+            rgba(0, 0, 0, 0.507) 30%
+        );
+        mix-blend-mode: var(--blend, multiply);
+    } */
+    .graphPaper {
+        background-color: white;
+        background-size: 10px 10px;
+        background-position: -1px -1px;
+        background-image: linear-gradient(0deg, #1a2923 1px, transparent 1px, transparent),
+            linear-gradient(90deg, #1a2923 1px, transparent 1px, transparent);
     }
 }

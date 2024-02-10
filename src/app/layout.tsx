@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en' className='dark' style={{ colorScheme: 'dark' }}>
-            <body className={inter.className}>{children}</body>
+            <body className={`graphPaper bg-darkBackground h-full ${inter}`}>{children}</body>
         </html>
     );
 }

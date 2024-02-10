@@ -9,12 +9,13 @@ export function Graph({ data, options }: { data?: Activity[]; options?: Options 
         <div className='p-3 bg-background rounded'>
             <HydrationProvider>
                 <Client>
-                    <div className='flex bg-slate-700 w-[800px] h-[200px] rounded-lg' />
-                    {/* <ActivityCalendar
+                    {/* debug container */}
+                    {/* <div className='flex bg-slate-700 w-[800px] h-[200px] rounded-lg' /> */}
+                    <ActivityCalendar
                         theme={{ light: colorScale, dark: colorScale }}
                         data={data || []}
                         {...options}
-                    /> */}
+                    />
                 </Client>
             </HydrationProvider>
         </div>

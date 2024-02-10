@@ -11,6 +11,7 @@ import { Graph } from '../graph';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useMeasure } from 'react-use';
+import { useMouse } from 'react-use';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { LoadingSpinner } from '../loadingSpinner';
@@ -19,6 +20,11 @@ const GRAPH_OFFSET = '-150px';
 function Builder({ userName, year, data }: BuilderProps) {
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
+
+    const [pageRef, { width: pageWidth, height: pageHeight }] = useMeasure();
+
+    const mouseRef = React.useRef(null);
+    const { docX, docY } = useMouse(mouseRef as any);
 
     const [clientErrorMessage, setClientErrorMessage] = useState('');
 
@@ -31,25 +37,27 @@ function Builder({ userName, year, data }: BuilderProps) {
     const [controlsOpen, setControlsOpen] = useState(false);
 
     // // this keeps track of when we have used the year switcher and are waiting for the new year to load from the root server component
-    // const [isLoadingYear, setIsLoadingYear] = useState(false);
-    // useEffect(() => {
-    //     // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
-    //     if (year && selectedYear && selectedYear !== year) {
-    //         setIsLoadingYear(true);
-    //     } else {
-    //         setIsLoadingYear(false);
-    //     }
-    // }, [selectedYear, router, userName, year]);
-
-    // should be need for state
-    const isLoadingYear = useMemo(() => {
+    const [isLoadingYear, setIsLoadingYear] = useState(false);
+    useEffect(() => {
         // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
         if (year && selectedYear && selectedYear !== year) {
-            return true;
+            setIsLoadingYear(true);
         } else {
-            return false;
+            setIsLoadingYear(false);
         }
-    }, [selectedYear, year]);
+    }, [selectedYear, router, userName, year]);
+
+    console.log('isLoadingYear', isLoadingYear);
+
+    // should be need for state
+    // const isLoadingYear = useMemo(() => {
+    //     // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
+    //     if (year && selectedYear && selectedYear !== year) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }, [selectedYear, year]);
 
     useEffect(() => {
         if (data && !data.length) {
@@ -104,109 +112,149 @@ function Builder({ userName, year, data }: BuilderProps) {
         setSelectedYear(year);
     }, []);
 
+    const transformOrigin = useMemo(() => {
+        const centerX = pageWidth / 2;
+        const centerY = pageHeight / 2;
+        const deltaX = docX - centerX;
+        const deltaY = docY - centerY;
+        return `${50 - (deltaX / centerX) * 20}% ${50 - (deltaY / centerY) * 20}%`;
+    }, [pageWidth, pageHeight, docX, docY]);
+
     return (
         <main
+            ref={pageRef as any}
             data-testid='builder'
-            className='flex min-h-screen flex-col items-center py-[100px] justify-center bg-darkBackground'
+            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center  justify-center bg-darkBackground'
         >
-            <AnimatePresence>
-                {data?.length ? (
-                    <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
-                        <Header userName={userName} setSelectedYear={setSelectedYear} />
-
-                        <div ref={ref as LegacyRef<HTMLDivElement>}>
+            <div
+                ref={mouseRef}
+                className='spotlight origin-center pointer-events-none'
+                style={{ transformOrigin }}
+                // experimenting with the spotlight effect - and how to make it follow the mouse smoothly
+                // I think framer has a way to have a animated interpolated value.
+                // It would look more like the show chases the mouse with a little delay and easing / spring
+                // style={{ transformOrigin, transition: 'transform-origin .1s ease' }}
+            />
+            <div
+                data-testid='builder-inner'
+                className='relative w-full py-[100px] flex  max-h-screen min-h-screen  flex-col items-center  justify-center'
+            >
+                <AnimatePresence>
+                    {data?.length ? (
+                        <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                             <motion.div
-                                initial={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
-                                animate={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
-                                exit={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
+                                transition={{ delay: 0.3 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                             >
-                                {isLoadingYear ? (
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                    >
-                                        <LoadingSpinner />
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        transition={{ delay: 0.3 }}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                    >
-                                        <Graph data={data} options={options} />
-                                    </motion.div>
-                                )}
+                                <Header userName={userName} setSelectedYear={setSelectedYear} />
+                            </motion.div>
+
+                            <div ref={ref as LegacyRef<HTMLDivElement>}>
+                                <motion.div
+                                    initial={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
+                                    animate={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
+                                    exit={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
+                                >
+                                    {isLoadingYear ? (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                        >
+                                            <LoadingSpinner />
+                                        </motion.div>
+                                    ) : (
+                                        <motion.div
+                                            transition={{ delay: 0.3 }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                        >
+                                            <Graph data={data} options={options} />
+                                        </motion.div>
+                                    )}
+                                </motion.div>
+                            </div>
+
+                            <motion.div
+                                transition={{ delay: 0.3 }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <ControlBar
+                                    controlsOpen={controlsOpen}
+                                    setControlsOpen={setControlsOpen}
+                                    year={year}
+                                    userName={userName}
+                                    options={options}
+                                    onChange={handleOnChange}
+                                    dimensions={dimensions}
+                                    setSelectedYear={handleSetSelectedYear}
+                                />
                             </motion.div>
                         </div>
+                    ) : null}
+                </AnimatePresence>
 
-                        <ControlBar
-                            controlsOpen={controlsOpen}
-                            setControlsOpen={setControlsOpen}
-                            year={year}
-                            userName={userName}
-                            options={options}
-                            onChange={handleOnChange}
-                            dimensions={dimensions}
-                            setSelectedYear={handleSetSelectedYear}
-                        />
-                    </div>
-                ) : null}
-            </AnimatePresence>
-
-            <AnimatePresence>
-                {!data?.length ? (
-                    <div className='absolute flex flex-col gap-10 items-center'>
-                        <motion.div
-                            className='flex flex-col gap-10 items-center'
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0, translateY: '-50px' }}
-                        >
-                            <div className='text-8xl'>🐙</div>
-                            <div className='flex flex-col gap-4 items-center'>
-                                <h1 className='text-5xl font-semibold'>Git Graph</h1>
-                                <div className='text-center text-lg text-muted max-w-3xl leading-snug antialiased'>
-                                    Get a personal view of your Github contribution history in just
-                                    a few clicks. Customize the look and feel as you see fit, and
-                                    embed it on your site in just a few clicks.
+                <AnimatePresence>
+                    {!data?.length ? (
+                        <div className='absolute flex flex-col gap-10 items-center'>
+                            <motion.div
+                                className='flex flex-col gap-10 items-center'
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0, translateY: '-50px' }}
+                            >
+                                <div className='text-8xl'>🐙</div>
+                                <div className='flex flex-col gap-4 items-center'>
+                                    <h1 className='text-5xl font-semibold'>Git Graph</h1>
+                                    <div className='text-center text-lg text-muted max-w-3xl leading-snug antialiased'>
+                                        Get a personal view of your Github contribution history in
+                                        just a few clicks. Customize the look and feel as you see
+                                        fit, and embed it on your site in just a few clicks.
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
 
-                        <motion.div
-                            className='flex flex-col gap-10 items-center'
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0, translateY: '50px' }}
-                        >
-                            <div className='flex w-full max-w-sm items-center space-x-2'>
-                                <Input
-                                    type='text'
-                                    name='userName'
-                                    placeholder='GitHub User Name'
-                                    onChange={handleInputOnChange}
-                                />
+                            <motion.div
+                                className='flex flex-col gap-10 items-center relative'
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0, translateY: '50px' }}
+                            >
+                                <div className='flex w-full max-w-sm items-center space-x-2'>
+                                    <Input
+                                        type='text'
+                                        name='userName'
+                                        placeholder='GitHub User Name'
+                                        onChange={handleInputOnChange}
+                                    />
 
-                                <Button type='submit' onClick={onSubmit}>
-                                    Submit
-                                </Button>
-                            </div>
+                                    <Button type='submit' onClick={onSubmit}>
+                                        Submit
+                                    </Button>
+                                </div>
 
-                            {clientErrorMessage ? (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                >
-                                    <div className='text-red-500 text-sm'>{clientErrorMessage}</div>
-                                </motion.div>
-                            ) : null}
-                        </motion.div>
-                    </div>
-                ) : null}
-            </AnimatePresence>
+                                {clientErrorMessage ? (
+                                    <motion.div
+                                        className='absolute left-0 -bottom-10 w-full text-center'
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                    >
+                                        <div className='text-red-500 text-sm '>
+                                            {clientErrorMessage}
+                                        </div>
+                                    </motion.div>
+                                ) : null}
+                            </motion.div>
+                        </div>
+                    ) : null}
+                </AnimatePresence>
+            </div>
         </main>
     );
 }

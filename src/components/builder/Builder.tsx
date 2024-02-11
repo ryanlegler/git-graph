@@ -12,7 +12,6 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useMeasure } from 'react-use';
 import { useMouse } from 'react-use';
-
 import { motion, AnimatePresence } from 'framer-motion';
 import { LoadingSpinner } from '../loadingSpinner';
 
@@ -27,6 +26,7 @@ function Builder({ userName, year, data }: BuilderProps) {
     const { docX, docY } = useMouse(mouseRef as any);
 
     const [clientErrorMessage, setClientErrorMessage] = useState('');
+    const [formIsSubmitting, setFormIsSubmitting] = useState(false);
 
     // this is the user name that is pending to be submitted
     const [pendingUserName, setPendingUserName] = useState<null | string>(null);
@@ -36,28 +36,10 @@ function Builder({ userName, year, data }: BuilderProps) {
 
     const [controlsOpen, setControlsOpen] = useState(false);
 
-    // // this keeps track of when we have used the year switcher and are waiting for the new year to load from the root server component
-    const [isLoadingYear, setIsLoadingYear] = useState(false);
-    useEffect(() => {
+    const isLoadingYear = useMemo(() => {
         // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
-        if (year && selectedYear && selectedYear !== year) {
-            setIsLoadingYear(true);
-        } else {
-            setIsLoadingYear(false);
-        }
-    }, [selectedYear, router, userName, year]);
-
-    console.log('isLoadingYear', isLoadingYear);
-
-    // should be need for state
-    // const isLoadingYear = useMemo(() => {
-    //     // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
-    //     if (year && selectedYear && selectedYear !== year) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }, [selectedYear, year]);
+        return year && selectedYear && selectedYear !== year;
+    }, [selectedYear, year]);
 
     useEffect(() => {
         if (data && !data.length) {
@@ -65,6 +47,7 @@ function Builder({ userName, year, data }: BuilderProps) {
         } else if (data && data.length) {
             setClientErrorMessage('');
         }
+        setFormIsSubmitting(false);
     }, [data]);
 
     const [options, setOptions] = useState<Options>({
@@ -90,11 +73,13 @@ function Builder({ userName, year, data }: BuilderProps) {
         setClientErrorMessage('');
     }, []);
 
-    const onSubmit = useCallback(() => {
+    const onSubmitForm = useCallback(() => {
+        setFormIsSubmitting(true);
         const validation = userNameSchema.safeParse(pendingUserName);
 
         if (!validation.success) {
             setClientErrorMessage(JSON.parse(validation?.error?.message)?.[0]?.message);
+            setFormIsSubmitting(false);
         } else {
             setClientErrorMessage('');
             router.push(`/?userName=${pendingUserName}`); // we don't know the actual year yet. - we assume it's the current year
@@ -120,6 +105,18 @@ function Builder({ userName, year, data }: BuilderProps) {
         return `${50 - (deltaX / centerX) * 20}% ${50 - (deltaY / centerY) * 20}%`;
     }, [pageWidth, pageHeight, docX, docY]);
 
+    // this is a hack to get the form to reset instantly when the user clicks to go back to the home page
+    const [renderingData, setRenderingData] = useState(true);
+    // it takes a bit of time from the client side router to update data back to empty
+    const resolvedData = renderingData && data;
+    const handleGoHome = useCallback(() => {
+        setRenderingData(false);
+    }, []);
+    // whenever data changes we set it back to renderingData true
+    useEffect(() => {
+        setRenderingData(true);
+    }, [data]);
+
     return (
         <main
             ref={pageRef as any}
@@ -140,7 +137,7 @@ function Builder({ userName, year, data }: BuilderProps) {
                 className='relative w-full py-[100px] flex  max-h-screen min-h-screen  flex-col items-center  justify-center'
             >
                 <AnimatePresence>
-                    {data?.length ? (
+                    {resolvedData && data?.length ? (
                         <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                             <motion.div
                                 transition={{ delay: 0.3 }}
@@ -148,7 +145,11 @@ function Builder({ userName, year, data }: BuilderProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
-                                <Header userName={userName} setSelectedYear={setSelectedYear} />
+                                <Header
+                                    onGoHome={handleGoHome}
+                                    userName={userName}
+                                    setSelectedYear={setSelectedYear}
+                                />
                             </motion.div>
 
                             <div ref={ref as LegacyRef<HTMLDivElement>}>
@@ -233,8 +234,13 @@ function Builder({ userName, year, data }: BuilderProps) {
                                         onChange={handleInputOnChange}
                                     />
 
-                                    <Button type='submit' onClick={onSubmit}>
-                                        Submit
+                                    <Button
+                                        type='submit'
+                                        onClick={onSubmitForm}
+                                        className='flex gap-2'
+                                    >
+                                        Submit{' '}
+                                        {formIsSubmitting ? <LoadingSpinner size='sm' /> : null}
                                     </Button>
                                 </div>
 

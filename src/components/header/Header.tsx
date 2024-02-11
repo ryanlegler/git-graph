@@ -5,12 +5,13 @@ import React, { useCallback } from 'react';
 import { HeaderProps } from './types';
 import { useRouter } from 'next/navigation';
 
-function Header({ userName, setSelectedYear }: HeaderProps) {
+function Header({ userName, setSelectedYear, onGoHome }: HeaderProps) {
     const router = useRouter();
     const handleClickHome = useCallback(() => {
         setSelectedYear(null); // clear out the state for the year
         router.push(`/`);
-    }, [router, setSelectedYear]);
+        onGoHome(); // this sets the state immediately
+    }, [setSelectedYear, onGoHome, router]);
 
     return (
         <header data-testid='header'>

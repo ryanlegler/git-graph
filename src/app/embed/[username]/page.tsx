@@ -18,7 +18,7 @@ export default async function Embed({
     searchParams,
     params,
 }: {
-    params: { userName: string } & SearchParamOptions;
+    params: { userName: string };
     searchParams: SearchParamOptions;
 }) {
     const { year, ...rest } = searchParams || {};

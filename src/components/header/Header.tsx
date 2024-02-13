@@ -5,15 +5,27 @@ import React, { useCallback } from 'react';
 import { HeaderProps } from './types';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-function Header({ setSelectedYear, onGoHome }: HeaderProps) {
+function Header({ setSelectedYear, onResetData }: HeaderProps) {
     const searchParams = useSearchParams();
     const userName = searchParams.get('userName');
     const router = useRouter();
     const handleClickHome = useCallback(() => {
-        setSelectedYear(null); // clear out the state for the year
+        // Because we mix the source of truth for the year between the url and the state
+        // We need to make sure we clear out the state when we navigate to the home page
+        // Maybe this should be a jotai atom
+        // can we rely only on the url for the year and still get the same experience?
+        setSelectedYear(null);
+
+        // this pushes the router stack to the empty state.
+        // When this happens the root server component will render on the server and the Builder component will receive the empty data
+        // The builder then knows to render the username input form
         router.push(`/`);
-        onGoHome(); // this sets the state immediately
-    }, [setSelectedYear, onGoHome, router]);
+
+        // PROBLEM: the above router.push(`/`); is not immediate... some time passes before he url is even updated. Iv'e seen this before...
+        // Not sure if it's a bug or a side effect of how we are using the router.
+        // GROSS SOLUTION: this sets the state immediately to the empty data state... triggers the animation to the username input form
+        onResetData();
+    }, [setSelectedYear, onResetData, router]);
 
     return (
         <header data-testid='header'>

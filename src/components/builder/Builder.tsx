@@ -12,18 +12,16 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useMeasure } from 'react-use';
 import { useMouse } from 'react-use';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useTransform } from 'framer-motion';
 import { LoadingSpinner } from '../loadingSpinner';
+import { useTransformOrigin } from './hooks/useTransformOrigin';
+import { GRAPH_OFFSET, INITIAL_OPTIONS } from './constants';
 
-const GRAPH_OFFSET = '-150px';
 function Builder({ year, data }: BuilderProps) {
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
 
-    const [pageRef, { width: pageWidth, height: pageHeight }] = useMeasure();
-
-    const mouseRef = React.useRef(null);
-    const { docX, docY } = useMouse(mouseRef as any);
+    // LOTS OF STATE IN THIS COMPONENT
 
     const [clientErrorMessage, setClientErrorMessage] = useState('');
     const [formIsSubmitting, setFormIsSubmitting] = useState(false);
@@ -35,6 +33,8 @@ function Builder({ year, data }: BuilderProps) {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
     const [controlsOpen, setControlsOpen] = useState(false);
+
+    const [options, setOptions] = useState<Options>(INITIAL_OPTIONS);
 
     const isLoadingYear = useMemo(() => {
         // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
@@ -50,18 +50,6 @@ function Builder({ year, data }: BuilderProps) {
         setFormIsSubmitting(false);
     }, [data]);
 
-    const [options, setOptions] = useState<Options>({
-        hideColorLegend: false,
-        showWeekdayLabels: true,
-        hideMonthLabels: false,
-        hideTotalCount: false,
-        blockMargin: 2,
-        blockRadius: 0,
-        blockSize: 10,
-        fontSize: 14,
-        weekStart: 4,
-    });
-
     const handleOnChange = useCallback((options: Options) => {
         setOptions(options);
     }, []);
@@ -74,11 +62,13 @@ function Builder({ year, data }: BuilderProps) {
     }, []);
 
     const onSubmitForm = useCallback(() => {
+        // show the loading spinner
         setFormIsSubmitting(true);
         const validation = userNameSchema.safeParse(pendingUserName);
 
         if (!validation.success) {
             setClientErrorMessage(JSON.parse(validation?.error?.message)?.[0]?.message);
+            // hide the loading spinner
             setFormIsSubmitting(false);
         } else {
             setClientErrorMessage('');
@@ -93,29 +83,34 @@ function Builder({ year, data }: BuilderProps) {
         };
     }, [width, height]);
 
+    // The selected year is the year that the user has selected from the year switcher
     const handleSetSelectedYear = useCallback((year: string) => {
         setSelectedYear(year);
     }, []);
 
-    const transformOrigin = useMemo(() => {
-        const centerX = pageWidth / 2;
-        const centerY = pageHeight / 2;
-        const deltaX = docX - centerX;
-        const deltaY = docY - centerY;
-        return `${50 - (deltaX / centerX) * 20}% ${50 - (deltaY / centerY) * 20}%`;
-    }, [pageWidth, pageHeight, docX, docY]);
+    // Custom hook that takes the ref of the page and the ref of the mouse
+    // and returns the transformOrigin for the spotlight effect
+    const { transformOrigin, pageRef, mouseRef } = useTransformOrigin();
 
-    // this is a hack to get the form to reset instantly when the user clicks to go back to the home page
-    const [renderingData, setRenderingData] = useState(true);
-    // it takes a bit of time from the client side router to update data back to empty
-    const resolvedData = renderingData && data;
-    const handleGoHome = useCallback(() => {
-        setRenderingData(false);
+    // HACKTOWN USA POPULATION: 1
+    // HACKTOWN USA POPULATION: 1
+    // HACKTOWN USA POPULATION: 1
+    // This is to get the Builder state to reset to the form "instantly" when the user clicks to go back to the home page
+    const [shouldRenderData, setShouldRenderData] = useState(true);
+
+    // we only render the "resolvedData" if shouldRenderData is true
+    const resolvedData = shouldRenderData && data;
+
+    // we imperatively set shouldRenderData to false when the user clicks to go back to the home page
+    const handleResetData = useCallback(() => {
+        setShouldRenderData(false);
     }, []);
-    // whenever data changes we set it back to renderingData true
+
+    // we imperatively set shouldRenderData to true when the data changes... also when the component mounts.
     useEffect(() => {
-        setRenderingData(true);
+        setShouldRenderData(true);
     }, [data]);
+    // LEAVING HACKTOWN USA - COME BACK SOON!
 
     return (
         <main
@@ -127,10 +122,6 @@ function Builder({ year, data }: BuilderProps) {
                 ref={mouseRef}
                 className='spotlight origin-center pointer-events-none'
                 style={{ transformOrigin }}
-                // experimenting with the spotlight effect - and how to make it follow the mouse smoothly
-                // I think framer has a way to have a animated interpolated value.
-                // It would look more like the show chases the mouse with a little delay and easing / spring
-                // style={{ transformOrigin, transition: 'transform-origin .1s ease' }}
             />
             <div
                 data-testid='builder-inner'
@@ -145,7 +136,10 @@ function Builder({ year, data }: BuilderProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
-                                <Header onGoHome={handleGoHome} setSelectedYear={setSelectedYear} />
+                                <Header
+                                    onResetData={handleResetData}
+                                    setSelectedYear={setSelectedYear}
+                                />
                             </motion.div>
 
                             <div ref={ref as LegacyRef<HTMLDivElement>}>

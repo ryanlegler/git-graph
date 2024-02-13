@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LoadingSpinner } from '../loadingSpinner';
 
 const GRAPH_OFFSET = '-150px';
-function Builder({ userName, year, data }: BuilderProps) {
+function Builder({ year, data }: BuilderProps) {
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
 
@@ -145,11 +145,7 @@ function Builder({ userName, year, data }: BuilderProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
-                                <Header
-                                    onGoHome={handleGoHome}
-                                    userName={userName}
-                                    setSelectedYear={setSelectedYear}
-                                />
+                                <Header onGoHome={handleGoHome} setSelectedYear={setSelectedYear} />
                             </motion.div>
 
                             <div ref={ref as LegacyRef<HTMLDivElement>}>
@@ -189,7 +185,6 @@ function Builder({ userName, year, data }: BuilderProps) {
                                     controlsOpen={controlsOpen}
                                     setControlsOpen={setControlsOpen}
                                     year={year}
-                                    userName={userName}
                                     options={options}
                                     onChange={handleOnChange}
                                     dimensions={dimensions}

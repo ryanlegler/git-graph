@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useCopyToClipboard } from 'react-use';
 import {
     DialogContent,
@@ -21,7 +21,9 @@ export function EmbedCodeModal({
     year: string;
 }) {
     const resolvedYear = year || new Date().getFullYear().toString();
-    const { username } = useParams<{ username: string }>();
+    const searchParams = useSearchParams();
+    const userName = searchParams.get('userName');
+
     const [copied, setCopied] = useState(false);
 
     const {
@@ -38,10 +40,10 @@ export function EmbedCodeModal({
 
     const embedString = useMemo(
         () =>
-            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${username}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${resolvedYear}"></iframe>`,
+            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${userName}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${resolvedYear}"></iframe>`,
         [
             hideColorLegend,
-            username,
+            userName,
             showWeekdayLabels,
             hideMonthLabels,
             hideTotalCount,

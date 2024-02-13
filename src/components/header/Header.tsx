@@ -3,9 +3,11 @@ import React, { useCallback } from 'react';
 
 // types
 import { HeaderProps } from './types';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-function Header({ userName, setSelectedYear, onGoHome }: HeaderProps) {
+function Header({ setSelectedYear, onGoHome }: HeaderProps) {
+    const searchParams = useSearchParams();
+    const userName = searchParams.get('userName');
     const router = useRouter();
     const handleClickHome = useCallback(() => {
         setSelectedYear(null); // clear out the state for the year

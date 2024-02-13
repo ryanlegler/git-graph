@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 // type InferredOptions = z.infer<typeof FormSchema>;
 
 // types
@@ -18,7 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
     showWeekdayLabels: z.boolean().default(false),
@@ -33,13 +33,9 @@ const FormSchema = z.object({
     colorScheme: z.enum(['dark', 'light']).default('dark'),
 });
 
-function Controls({
-    options,
-    onChange,
-    userName,
-    year: initialYear,
-    setSelectedYear,
-}: ControlsProps) {
+function Controls({ options, onChange, year: initialYear, setSelectedYear }: ControlsProps) {
+    const searchParams = useSearchParams();
+    const userName = searchParams.get('userName');
     const router = useRouter();
     const [years, setYears] = useState<string[]>([]);
     const currentYear = new Date().getFullYear().toString();

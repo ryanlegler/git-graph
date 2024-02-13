@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 function ControlBar({
     options,
     dimensions,
-    userName,
+
     controlsOpen,
     year,
     onChange,
@@ -23,7 +23,7 @@ function ControlBar({
 }: ControlBarProps) {
     const handleToggleControls = useCallback(() => {
         setControlsOpen((prev) => !prev);
-    }, []);
+    }, [setControlsOpen]);
 
     return (
         <div
@@ -40,7 +40,6 @@ function ControlBar({
                     >
                         <Controls
                             setSelectedYear={setSelectedYear}
-                            userName={userName}
                             options={options}
                             onChange={onChange}
                             year={year}

@@ -13,3 +13,16 @@ export const userNameSchema = z
     .regex(/^\S+$/, 'White space is not allowed');
 
 export type UserNameSchema = z.infer<typeof userNameSchema>;
+
+export type SearchParamOptions = {
+    blockMargin?: string;
+    blockRadius?: string;
+    blockSize?: string;
+    colorScheme?: 'dark' | 'light';
+    fontSize?: string;
+    hideColorLegend?: 'true' | 'false';
+    hideMonthLabels?: 'true' | 'false';
+    hideTotalCount?: 'true' | 'false';
+    showWeekdayLabels?: string;
+    year?: string;
+};

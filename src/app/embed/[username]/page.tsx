@@ -1,18 +1,7 @@
 import { getContributions } from '@/dataLayer/getContributions';
 import { getHydratedSearchParams } from '../hooks/useHydrateSearchParams';
 import { Graph } from '@/components/graph';
-export type SearchParamOptions = {
-    blockMargin?: string;
-    blockRadius?: string;
-    blockSize?: string;
-    colorScheme?: 'dark' | 'light';
-    fontSize?: string;
-    hideColorLegend?: 'true' | 'false';
-    hideMonthLabels?: 'true' | 'false';
-    hideTotalCount?: 'true' | 'false';
-    showWeekdayLabels?: string;
-    year?: string;
-};
+import { SearchParamOptions } from '@/components/builder/types';
 
 export default async function Embed({
     searchParams,

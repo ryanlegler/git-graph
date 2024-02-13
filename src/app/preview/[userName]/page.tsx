@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
-import { SearchParamOptions } from '../../embed/[userName]/page';
 import { getHydratedSearchParams } from '../../embed/hooks/useHydrateSearchParams';
+import { SearchParamOptions } from '@/components/builder/types';
 
 export default async function Preview({
     params,

@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Day } from '../types';
+import { useMemo } from "react";
+import { Day } from "../../../types";
 
 // use the hook in a "use client" component
 export function useDayString(day: Day) {
@@ -12,5 +12,5 @@ export function useDayString(day: Day) {
 export function getDayString(day: Day) {
     const date = new Date();
     date.setDate(day);
-    return date.toLocaleString('en-US', { weekday: 'long' });
+    return date.toLocaleString("en-US", { weekday: "long" });
 }

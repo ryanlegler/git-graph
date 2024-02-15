@@ -1,55 +1,36 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Package Manager
-
-This project uses [pnpm](https://pnpm.io/) for package management
-
 ## Getting Started
 
 First, run the development server:
 
 ```bash
+npm run dev
+# or
+yarn dev
+# or
 pnpm dev
+# or
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Code Formatting w/ Prettier
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-Manually run the formatter:
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-```bash
-pnpm format
-```
+## Learn More
 
-Check Formatting:
+To learn more about Next.js, take a look at the following resources:
 
-```bash
-npx prettier . --check
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-See `.prettierrc` for the prettier config
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Design
+## Deploy on Vercel
 
-Design work can be found [here](https://www.figma.com/file/y1VpCWYhlczOIvHNJjLKm6/GitGraph?type=design&node-id=3%3A81&mode=design&t=w0Gnz8fvsIV2Wg41-1) and [here](https://www.figma.com/file/Y1MQyyyUsSxhh8Y3cERV9K/GitGraph-Flows?type=whiteboard&node-id=0%3A1&t=rMSIYodYSOTN59wG-1)
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## MVP
-
-Here is the MVP definition (v1)
-
-_basic reqs_  
-can input github user name  
-can genererate contrib graph  
-can get embed code  
-can load embed in code sandbox
-
-_control_  
-can limit years  
-can select dark vs light theme
-
-_delight (one of)_  
-page transition  
-cool btn hover interaction  
-loading logo  
-one piece of delight
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

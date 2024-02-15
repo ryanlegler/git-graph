@@ -1,5 +1,5 @@
 // TODO - add better type safe param tooling here. - this is gross
-export function useHydrateSearchParams(searchParams: Record<string, string>): Record<string, any> {
+export function getHydratedSearchParams(searchParams: Record<string, string>): Record<string, any> {
     const params: Record<string, any> = {};
     for (const [key, value] of Object.entries(searchParams)) {
         if (value === 'true') {

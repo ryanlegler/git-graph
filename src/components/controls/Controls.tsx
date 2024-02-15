@@ -1,234 +1,132 @@
-'use client';
-import { useCallback } from 'react';
-import { useAtom } from 'jotai';
-import { Flex } from 'styled-system/jsx/flex';
-import { Box, Grid } from 'styled-system/jsx';
-// import { useTheme } from 'next-themes';
+import React, { useCallback, useEffect, useState } from 'react';
+// type InferredOptions = z.infer<typeof FormSchema>;
 
-// components
-import { Button } from '@components/ui/button';
-import { Switch } from '@/components/ui/Switch';
-import { StyledFlex } from '@/components/ui/flex';
-import { Slider } from '@/components/ui/Slider';
-import { PageHeaderBar } from '@/components/pageHeaderBar';
-import { EmbedCodeModal } from '@components/embedCodeModal';
-import { YearsSelect } from '@components/controls/yearsSelect';
-import { SwitchLabel } from '@components/controls/switchLabel';
+// types
+import { ControlsProps } from './types';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useWatch } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import { Options } from '@/types';
+import { SwitchControl } from './switchControl';
+import { SliderControl } from './sliderControl';
 
-// atoms
-import { controlsVisibilityAtom, optionsAtom, selectedYearAtom } from '@/atoms';
-import { ActivityCalendarConfigProps, ControlsProps } from './types';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-import { css } from 'styled-system/css';
-import { useDayString } from './hooks/useDayString';
+const FormSchema = z.object({
+    showWeekdayLabels: z.boolean().default(false),
+    hideColorLegend: z.boolean().default(false),
+    hideMonthLabels: z.boolean().default(false),
+    hideTotalCount: z.boolean().default(false),
+    blockMargin: z.number().default(4),
+    blockRadius: z.number().default(2),
+    blockSize: z.number().default(12),
+    fontSize: z.number().default(14),
+    weekStart: z.number().default(0),
+    colorScheme: z.enum(['dark', 'light']).default('dark'),
+});
 
-import { Day } from './types';
+function Controls({ options, onChange, year: initialYear, setSelectedYear }: ControlsProps) {
+    const searchParams = useSearchParams();
+    const userName = searchParams.get('userName');
+    const router = useRouter();
+    const [years, setYears] = useState<string[]>([]);
+    const currentYear = new Date().getFullYear().toString();
+    const [year, setYear] = useState<string>(initialYear || currentYear);
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: options,
+    });
 
-export function Controls({ availableYears, username }: ControlsProps) {
-    const [controlsOptions, setControlsOptions] = useAtom(optionsAtom);
-    const [showControls, setShowControls] = useAtom(controlsVisibilityAtom);
-    const [selectedYear, setSelectedYear] = useAtom(selectedYearAtom);
-    // const { theme, setTheme } = useTheme();
+    // this set the year if the the current year is not in the list of years
+    useEffect(() => {
+        const noYear = !initialYear && years.includes(currentYear);
+        if (noYear) {
+            router.push(`/?userName=${userName}&year=${years[0]}`); // year needs to be dynamic - will need to fetch
+        }
+    }, [currentYear, initialYear, router, userName, years]);
 
-    const {
-        hideColorLegend,
-        showWeekdayLabels,
-        colorScheme,
-        hideMonthLabels,
-        hideTotalCount,
-        blockMargin,
-        blockRadius,
-        blockSize,
-        fontSize,
-        maxLevel, // not using this - it was blowing things up
-        weekStart,
-    } = controlsOptions;
+    // this was some weird thing with react-hook-form
+    const all = useWatch({
+        control: form.control,
+    }) as Options;
+    useEffect(() => {
+        onChange?.(all);
+    }, [all, onChange]);
 
-    const weekStartString = useDayString(weekStart as Day);
+    // could probably use a server action here
+    // or find a way to compose this as a server component
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`/api/getYears/${userName}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-    const handleSetBooleanOption = useCallback(
-        (key: keyof ActivityCalendarConfigProps) => {
-            setControlsOptions((prev) => ({
-                ...prev,
-                [key]: !prev[key],
-            }));
+            const data = await response.json();
+
+            const resolvedYears: string[] = data.map((year: number) => year.toString());
+            setYears(resolvedYears);
+        };
+
+        fetchData();
+    }, [userName]);
+
+    const onYearChange = useCallback(
+        (value: string) => {
+            setYear(value); // sets the local year - could consolidate to just use setSelectedYear
+            setSelectedYear(value); // sets the year in the parent
+            router.push(`/?userName=${userName}&year=${value}`); // year needs to be dynamic - will need to fetch
         },
-        [setControlsOptions]
+        [router, setSelectedYear, userName]
     );
 
     return (
-        <StyledFlex direction='vertical' py={4} w='full' maxW={850}>
-            <PageHeaderBar username={username}>
-                <Flex gap='2'>
-                    <YearsSelect
-                        availableYears={availableYears}
-                        setSelected={setSelectedYear}
-                        selected={selectedYear}
-                    />
-                    <Button
-                        onClick={() => {
-                            setShowControls((prev) => !prev);
-                        }}
-                    >
-                        Controls
-                    </Button>
-                    <EmbedCodeModal />
-                </Flex>
-            </PageHeaderBar>
+        <Form {...form} data-testid='controls'>
+            <div className='bg-black p-5 pb-8 rounded-2xl flex gap-5 flex-col'>
+                <h2 className='text-2xl font-bold'>Controls</h2>
+                <form>
+                    <div className='grid grid-cols-2 gap-7'>
+                        <div className='flex gap-5 flex-col '>
+                            <Select onValueChange={onYearChange} defaultValue={year}>
+                                <SelectTrigger className='w-[180px]'>
+                                    <SelectValue placeholder='Choose a Year' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {years.map((year) => (
+                                        <SelectItem key={year} value={year}>
+                                            {year}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
-            {showControls ? (
-                <StyledFlex gap={3} direction='vertical'>
-                    <StyledFlex direction='vertical' gap={3}>
-                        <Box>
-                            <h2 className={css({ fontSize: 30, fontWeight: 700 })}>Controls</h2>
-                            <Grid gridTemplateColumns={[1, 2]}>
-                                {/* Booleans */}
-                                <Box display={'flex'} flexDir='column' gap={2}>
-                                    <Switch
-                                        checked={showWeekdayLabels}
-                                        onCheckedChange={() => {
-                                            handleSetBooleanOption('showWeekdayLabels');
-                                        }}
-                                    >
-                                        Show Weekday Labels
-                                    </Switch>
-                                    {/* <Switch
-                                        checked={colorScheme === 'light' ? true : false}
-                                        onCheckedChange={() => {
-                                            setControlsOptions((prev) => {
-                                                const newColorScheme =
-                                                    prev.colorScheme === 'light' ? 'dark' : 'light';
-                                                setTheme(newColorScheme);
-                                                return {
-                                                    ...prev,
-                                                    colorScheme: newColorScheme,
-                                                };
-                                            });
-                                        }}
-                                    >
-                                        Light Mode
-                                    </Switch> */}
-                                    <Switch
-                                        checked={hideColorLegend}
-                                        onCheckedChange={(e) => {
-                                            handleSetBooleanOption('hideColorLegend');
-                                        }}
-                                    >
-                                        Hide Color Legend
-                                    </Switch>
-                                    <Switch
-                                        checked={hideMonthLabels}
-                                        onCheckedChange={() => {
-                                            handleSetBooleanOption('hideMonthLabels');
-                                        }}
-                                    >
-                                        Hide Month Labels
-                                    </Switch>
-                                    <Switch
-                                        checked={hideTotalCount}
-                                        onCheckedChange={() => {
-                                            handleSetBooleanOption('hideTotalCount');
-                                        }}
-                                    >
-                                        Hide Total Count
-                                    </Switch>
-                                </Box>
-                                {/* Sliders */}
-                                <Box display={'flex'} flexDir='column' gap={4}>
-                                    <Slider
-                                        min={2}
-                                        max={20}
-                                        step={2}
-                                        value={[blockMargin as number]}
-                                        onValueChange={(details) => console.log(details.value)}
-                                        onValueChangeEnd={(details) => {
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                blockMargin: details.value[0],
-                                            }));
-                                        }}
-                                    >
-                                        <SwitchLabel>Block Margin</SwitchLabel>
-                                    </Slider>
-                                    <Slider
-                                        min={2}
-                                        max={20}
-                                        step={2}
-                                        value={[blockRadius as number]}
-                                        onValueChangeEnd={(details) => {
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                blockRadius: details.value[0],
-                                            }));
-                                        }}
-                                    >
-                                        <SwitchLabel>Block Radius</SwitchLabel>
-                                    </Slider>
-                                    <Slider
-                                        min={2}
-                                        max={20}
-                                        step={2}
-                                        value={[blockSize as number]}
-                                        onValueChangeEnd={(details) => {
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                blockSize: details.value[0],
-                                            }));
-                                        }}
-                                    >
-                                        <SwitchLabel>Block Size</SwitchLabel>
-                                    </Slider>
-
-                                    <Slider
-                                        min={6}
-                                        max={32}
-                                        step={2}
-                                        value={[fontSize as number]}
-                                        onValueChangeEnd={(details) => {
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                fontSize: details.value[0],
-                                            }));
-                                        }}
-                                    >
-                                        <SwitchLabel>Font Size</SwitchLabel>
-                                    </Slider>
-
-                                    {/* max level seems to interact with potentially both the color scales and the "level" key on the Activity data..
-                                        Need to investigate further how we are supposed to account for this if we actually want to support this tunable   */}
-                                    {/* <Slider
-                                            min={1}
-                                            max={9}
-                                            value={[maxLevel as number]}
-                                            onValueChangeEnd={(details) => {
-                                                setControlsOptions((prev) => ({
-                                                    ...prev,
-                                                    maxLevel: details.value[0],
-                                                }));
-                                            }}>
-                                            <SwitchLabel>Max Level</SwitchLabel>
-                                        </Slider> */}
-
-                                    {/* we should maybe use a select for this */}
-                                    <Slider
-                                        min={0}
-                                        max={6}
-                                        value={[Number(weekStart) as number]}
-                                        onValueChangeEnd={(details) => {
-                                            setControlsOptions((prev) => ({
-                                                ...prev,
-                                                weekStart: details.value[0] as Day,
-                                            }));
-                                        }}
-                                    >
-                                        <SwitchLabel>Week Start: {weekStartString}</SwitchLabel>
-                                    </Slider>
-                                </Box>
-                            </Grid>
-                        </Box>
-                    </StyledFlex>
-                </StyledFlex>
-            ) : null}
-        </StyledFlex>
+                            <SwitchControl form={form} formKey='showWeekdayLabels' />
+                            <SwitchControl form={form} formKey='hideColorLegend' />
+                            <SwitchControl form={form} formKey='hideMonthLabels' />
+                            <SwitchControl form={form} formKey='hideTotalCount' />
+                        </div>
+                        <div className='flex gap-5 flex-col'>
+                            <SliderControl form={form} formKey='blockMargin' min={2} max={20} />
+                            <SliderControl form={form} formKey='blockRadius' min={2} max={20} />
+                            <SliderControl form={form} formKey='blockSize' min={2} max={20} />
+                            <SliderControl form={form} formKey='fontSize' min={6} max={32} />
+                            <SliderControl form={form} formKey='weekStart' min={0} max={6} />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Form>
     );
 }
+
+export { Controls };

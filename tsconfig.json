@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "target": "es6",
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "skipLibCheck": true,
@@ -13,7 +12,6 @@
         "isolatedModules": true,
         "jsx": "preserve",
         "incremental": true,
-        "baseUrl": "./",
         "plugins": [
             {
                 "name": "next"

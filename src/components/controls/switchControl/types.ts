@@ -1,6 +1,7 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from 'react-hook-form';
+import { InferredOptions } from '../types';
 
 export type SwitchControlProps = {
     form: UseFormReturn<any>;
-    formKey: string;
+    formKey: keyof InferredOptions;
 };

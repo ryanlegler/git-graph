@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-// type InferredOptions = z.infer<typeof FormSchema>;
 
 // types
 import { ControlsProps } from './types';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
-import { Form } from '@/components/ui/form';
+import { Form, FormItem } from '@/components/ui/form';
 import { Options } from '@/types';
 import { SwitchControl } from './switchControl';
 import { SliderControl } from './sliderControl';
@@ -19,8 +18,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Label } from '../ui/label';
 
-const FormSchema = z.object({
+export const formSchema = z.object({
     showWeekdayLabels: z.boolean().default(false),
     hideColorLegend: z.boolean().default(false),
     hideMonthLabels: z.boolean().default(false),
@@ -40,8 +40,8 @@ function Controls({ options, onChange, year: initialYear, setSelectedYear }: Con
     const [years, setYears] = useState<string[]>([]);
     const currentYear = new Date().getFullYear().toString();
     const [year, setYear] = useState<string>(initialYear || currentYear);
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
         defaultValues: options,
     });
 
@@ -97,18 +97,23 @@ function Controls({ options, onChange, year: initialYear, setSelectedYear }: Con
                 <form>
                     <div className='grid grid-cols-2 gap-7'>
                         <div className='flex gap-5 flex-col '>
-                            <Select onValueChange={onYearChange} defaultValue={year}>
-                                <SelectTrigger className='w-[180px]'>
-                                    <SelectValue placeholder='Choose a Year' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {years.map((year) => (
-                                        <SelectItem key={year} value={year}>
-                                            {year}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <FormItem className='flex gap-2 w-full justify-between align-middle'>
+                                <Label className='flex items-center' htmlFor={'year'}>
+                                    Year
+                                </Label>
+                                <Select onValueChange={onYearChange} defaultValue={year}>
+                                    <SelectTrigger className='w-[180px]'>
+                                        <SelectValue placeholder='Choose a Year' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {years.map((year) => (
+                                            <SelectItem key={year} value={year}>
+                                                {year}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
 
                             <SwitchControl form={form} formKey='showWeekdayLabels' />
                             <SwitchControl form={form} formKey='hideColorLegend' />

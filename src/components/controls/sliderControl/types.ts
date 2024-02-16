@@ -1,8 +1,9 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from 'react-hook-form';
+import { InferredOptions } from '../types';
 
 export type SliderControlProps = {
     form: UseFormReturn<any>;
-    formKey: string;
+    formKey: keyof InferredOptions;
     max: number;
     min: number;
     step?: number;

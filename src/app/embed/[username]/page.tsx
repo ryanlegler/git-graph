@@ -7,13 +7,13 @@ export default async function Embed({
     searchParams,
     params,
 }: {
-    params: { userName: string };
+    params: { username: string };
     searchParams: SearchParamOptions;
 }) {
     const { year, ...rest } = searchParams || {};
-    const { userName } = params || {};
+    const { username } = params || {};
     const options = getHydratedSearchParams(rest);
     const resolvedYear = year || new Date().getFullYear().toString();
-    const data = await getContributions({ userName, year: resolvedYear });
+    const data = await getContributions({ userName: username, year: resolvedYear });
     return <Graph data={data} options={options} />;
 }

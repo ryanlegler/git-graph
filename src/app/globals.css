@@ -71,9 +71,9 @@
 }
 
 @layer base {
-    * {
+    /* * {
         @apply border-border;
-    }
+    } */
     body,
     html {
         height: 100vh;

@@ -2,6 +2,7 @@ import { Activity } from 'react-activity-calendar';
 
 export type BuilderProps = {
     data?: Activity[];
+    years?: string[];
     year: string;
 };
 

@@ -20,6 +20,7 @@ const config = {
 
         extend: {
             colors: {
+                ['github.000']: '#0D1116',
                 ['github.100']: '#161B22',
                 ['github.200']: '#0D4429',
                 ['github.300']: '#016D32',

@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang='en' className='dark' style={{ colorScheme: 'dark' }}>
-            <body className={`graphPaper bg-darkBackground h-full ${inter}`}>{children}</body>
+            <body className={`graphPaper bg-github.000 h-full ${inter}`}>{children}</body>
         </html>
     );
 }

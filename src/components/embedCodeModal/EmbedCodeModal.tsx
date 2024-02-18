@@ -1,7 +1,5 @@
-'use client';
-
 import { useCallback, useMemo, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useCopyToClipboard } from 'react-use';
 import {
     DialogContent,
@@ -10,16 +8,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
+import { EmbedCodeModalProps } from './types';
 
-export function EmbedCodeModal({
-    options,
-    dimensions,
-    year,
-}: {
-    options?: any;
-    dimensions?: { width: number; height: number };
-    year: string;
-}) {
+export function EmbedCodeModal({ options, dimensions, year, setDialogOpen }: EmbedCodeModalProps) {
+    // falls back to current year
     const resolvedYear = year || new Date().getFullYear().toString();
     const searchParams = useSearchParams();
     const userName = searchParams.get('userName');
@@ -62,22 +54,30 @@ export function EmbedCodeModal({
     const handleCopy = useCallback(() => {
         copyToClipboard(embedString);
         setCopied(true);
+        // setTimeout(() => {
+        //     setCopied(false);
+        // }, 2000);
         setTimeout(() => {
-            setCopied(false);
+            setDialogOpen(false);
+            setTimeout(() => {
+                setCopied(false);
+            }, 100);
         }, 2000);
-    }, [copyToClipboard, embedString]);
+    }, [copyToClipboard, embedString, setDialogOpen]);
 
     return (
         <DialogContent>
             <DialogHeader className='flex gap-8 flex-col'>
                 <DialogTitle>Embed Code</DialogTitle>
-                <DialogDescription className='max-w-full break-all'>
+                <DialogDescription className='max-w-full break-all px-4'>
                     <code>{embedString}</code>
                 </DialogDescription>
                 {copied ? (
-                    <Button>✅ Copied!</Button>
+                    <Button className='pointer-events-none'>Copied!</Button>
                 ) : (
-                    <Button onClick={handleCopy}>💾 Copy to Clipboard</Button>
+                    <Button variant='secondary' onClick={handleCopy}>
+                        Copy to Clipboard
+                    </Button>
                 )}
             </DialogHeader>
         </DialogContent>

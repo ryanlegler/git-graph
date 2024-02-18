@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // types
 import { ControlsProps } from './types';
@@ -19,6 +19,12 @@ import {
 } from '@/components/ui/select';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Label } from '../ui/label';
+import { useAtom } from 'jotai';
+import { fetchingAtom } from '@/app/atoms';
+import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
+
+import { Button } from '../ui/button';
+import { INITIAL_OPTIONS } from '../builder/constants';
 
 export const formSchema = z.object({
     showWeekdayLabels: z.boolean().default(false),
@@ -33,67 +39,64 @@ export const formSchema = z.object({
     colorScheme: z.enum(['dark', 'light']).default('dark'),
 });
 
-function Controls({ options, onChange, year: initialYear, setSelectedYear }: ControlsProps) {
+function Controls({
+    options,
+    onChange,
+    year,
+    years,
+    handleToggleControls,
+    onReset,
+}: ControlsProps) {
+    const [fetching, setFetching] = useAtom(fetchingAtom);
     const searchParams = useSearchParams();
     const userName = searchParams.get('userName');
     const router = useRouter();
-    const [years, setYears] = useState<string[]>([]);
-    const currentYear = new Date().getFullYear().toString();
-    const [year, setYear] = useState<string>(initialYear || currentYear);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: options,
     });
 
-    // this set the year if the the current year is not in the list of years
-    useEffect(() => {
-        const noYear = !initialYear && years.includes(currentYear);
-        if (noYear) {
-            router.push(`/?userName=${userName}&year=${years[0]}`); // year needs to be dynamic - will need to fetch
-        }
-    }, [currentYear, initialYear, router, userName, years]);
-
     // this was some weird thing with react-hook-form
-    const all = useWatch({
+    const derivedOptions = useWatch({
         control: form.control,
     }) as Options;
     useEffect(() => {
-        onChange?.(all);
-    }, [all, onChange]);
+        onChange?.(derivedOptions);
+    }, [derivedOptions, onChange]);
 
-    // could probably use a server action here
-    // or find a way to compose this as a server component
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`/api/getYears/${userName}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-
-            const resolvedYears: string[] = data.map((year: number) => year.toString());
-            setYears(resolvedYears);
-        };
-
-        fetchData();
-    }, [userName]);
-
-    const onYearChange = useCallback(
+    const handleYearChange = useCallback(
         (value: string) => {
-            setYear(value); // sets the local year - could consolidate to just use setSelectedYear
-            setSelectedYear(value); // sets the year in the parent
+            setFetching(true);
             router.push(`/?userName=${userName}&year=${value}`); // year needs to be dynamic - will need to fetch
         },
-        [router, setSelectedYear, userName]
+        [router, setFetching, userName]
     );
+
+    const hasChanges = useMemo(() => {
+        // there's a react-hook form way to do this
+        // form.formState.isDirty()
+        // but is stays dirty after reset..;
+        return JSON.stringify(INITIAL_OPTIONS) !== JSON.stringify(options);
+    }, [options]);
 
     return (
         <Form {...form} data-testid='controls'>
             <div className='bg-black p-5 pb-8 rounded-2xl flex gap-5 flex-col'>
-                <h2 className='text-2xl font-bold'>Controls</h2>
+                <div className='flex justify-between'>
+                    <h2 className='text-2xl font-bold'>Controls</h2>
+
+                    <div className='flex'>
+                        {hasChanges ? (
+                            <Button variant='ghost' size='icon' onClick={onReset}>
+                                <ReloadIcon className='h-4 w-4' />
+                            </Button>
+                        ) : null}
+                        <Button variant='ghost' size='icon' onClick={handleToggleControls}>
+                            <Cross2Icon className='h-4 w-4' />
+                        </Button>
+                    </div>
+                </div>
                 <form>
                     <div className='grid grid-cols-2 gap-7'>
                         <div className='flex gap-5 flex-col '>
@@ -101,12 +104,12 @@ function Controls({ options, onChange, year: initialYear, setSelectedYear }: Con
                                 <Label className='flex items-center' htmlFor={'year'}>
                                     Year
                                 </Label>
-                                <Select onValueChange={onYearChange} defaultValue={year}>
+                                <Select onValueChange={handleYearChange} defaultValue={year}>
                                     <SelectTrigger className='w-[180px]'>
                                         <SelectValue placeholder='Choose a Year' />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {years.map((year) => (
+                                        {years?.map((year) => (
                                             <SelectItem key={year} value={year}>
                                                 {year}
                                             </SelectItem>

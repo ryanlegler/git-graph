@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { HydrationProvider, Server, Client } from 'react-hydration-provider';
 
@@ -10,20 +10,25 @@ import { EmbedCodeModal } from '../embedCodeModal';
 import { Controls } from '../controls';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { INITIAL_OPTIONS } from '../builder/constants';
 
 function ControlBar({
     options,
     dimensions,
-
+    years,
     controlsOpen,
     year,
     onChange,
-    setSelectedYear,
     setControlsOpen,
 }: ControlBarProps) {
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+
     const handleToggleControls = useCallback(() => {
         setControlsOpen((prev) => !prev);
     }, [setControlsOpen]);
+    const handleOnReset = useCallback(() => {
+        onChange(INITIAL_OPTIONS);
+    }, [onChange]);
 
     return (
         <div
@@ -39,7 +44,9 @@ function ControlBar({
                         exit={{ opacity: 0, translateY: '20px' }}
                     >
                         <Controls
-                            setSelectedYear={setSelectedYear}
+                            years={years}
+                            handleToggleControls={handleToggleControls}
+                            onReset={handleOnReset}
                             options={options}
                             onChange={onChange}
                             year={year}
@@ -52,11 +59,16 @@ function ControlBar({
                 <Button onClick={handleToggleControls}>Customize</Button>
                 <HydrationProvider>
                     <Client>
-                        <Dialog>
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                             <DialogTrigger>
                                 <Button variant='secondary'>Get Embed</Button>
                             </DialogTrigger>
-                            <EmbedCodeModal year={year} options={options} dimensions={dimensions} />
+                            <EmbedCodeModal
+                                year={year}
+                                options={options}
+                                dimensions={dimensions}
+                                setDialogOpen={setDialogOpen}
+                            />
                         </Dialog>
                     </Client>
                     <Server>

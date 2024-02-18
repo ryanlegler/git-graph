@@ -1,4 +1,4 @@
 export type HeaderProps = {
-    setSelectedYear: (year: string | null) => void;
-    onResetData: () => void;
+    // setSelectedYear: (year: string | null) => void;
+    onResetData?: () => void;
 };

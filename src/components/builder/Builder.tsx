@@ -15,30 +15,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LoadingSpinner } from '../loadingSpinner';
 import { useTransformOrigin } from './hooks/useTransformOrigin';
 import { GRAPH_OFFSET, INITIAL_OPTIONS } from './constants';
+import { useAtom } from 'jotai';
+import { fetchingAtom } from '@/app/atoms';
 
-function Builder({ year, data }: BuilderProps) {
+function Builder({ year, data, years }: BuilderProps) {
+    const [fetching, setFetching] = useAtom(fetchingAtom);
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
-
-    // LOTS OF STATE IN THIS COMPONENT
-
     const [clientErrorMessage, setClientErrorMessage] = useState('');
     const [formIsSubmitting, setFormIsSubmitting] = useState(false);
 
     // this is the user name that is pending to be submitted
     const [pendingUserName, setPendingUserName] = useState<null | string>(null);
-
-    // know we are loading if we have a year from the year switcher that doesn't match the year coming in from params
-    const [selectedYear, setSelectedYear] = useState<string | null>(null);
-
     const [controlsOpen, setControlsOpen] = useState(false);
-
     const [options, setOptions] = useState<Options>(INITIAL_OPTIONS);
-
-    const isLoadingYear = useMemo(() => {
-        // know we are loading if we have a year from the year switcher (selectedYear) and that doesn't match the year coming in from params (year)
-        return year && selectedYear && selectedYear !== year;
-    }, [selectedYear, year]);
 
     useEffect(() => {
         if (data && !data.length) {
@@ -55,7 +45,6 @@ function Builder({ year, data }: BuilderProps) {
 
     const handleInputOnChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setPendingUserName(e.target.value);
-
         // clear the error message when the user starts typing again
         setClientErrorMessage('');
     }, []);
@@ -82,40 +71,28 @@ function Builder({ year, data }: BuilderProps) {
         };
     }, [width, height]);
 
-    // The selected year is the year that the user has selected from the year switcher
-    const handleSetSelectedYear = useCallback((year: string) => {
-        setSelectedYear(year);
-    }, []);
-
     // Custom hook that takes the ref of the page and the ref of the mouse
     // and returns the transformOrigin for the spotlight effect
     const { transformOrigin, pageRef, mouseRef } = useTransformOrigin();
 
-    // HACKTOWN USA POPULATION: 1
-    // HACKTOWN USA POPULATION: 1
-    // HACKTOWN USA POPULATION: 1
-    // This is to get the Builder state to reset to the form "instantly" when the user clicks to go back to the home page
-    const [shouldRenderData, setShouldRenderData] = useState(true);
+    useEffect(() => {
+        setFetching(false);
+    }, [data, setFetching]);
 
-    // we only render the "resolvedData" if shouldRenderData is true
-    const resolvedData = shouldRenderData && data;
-
-    // we imperatively set shouldRenderData to false when the user clicks to go back to the home page
-    const handleResetData = useCallback(() => {
-        setShouldRenderData(false);
+    useEffect(() => {
+        console.log('mount');
     }, []);
 
-    // we imperatively set shouldRenderData to true when the data changes... also when the component mounts.
-    useEffect(() => {
-        setShouldRenderData(true);
-    }, [data]);
-    // LEAVING HACKTOWN USA - COME BACK SOON!
+    const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onSubmitForm();
+    };
 
     return (
         <main
             ref={pageRef as any}
             data-testid='builder'
-            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center  justify-center bg-darkBackground'
+            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center justify-center bg-github.000'
         >
             <div
                 ref={mouseRef}
@@ -127,7 +104,7 @@ function Builder({ year, data }: BuilderProps) {
                 className='relative w-full py-[100px] flex  max-h-screen min-h-screen  flex-col items-center  justify-center'
             >
                 <AnimatePresence>
-                    {resolvedData && data?.length ? (
+                    {data && data?.length ? (
                         <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                             <motion.div
                                 transition={{ delay: 0.3 }}
@@ -135,10 +112,7 @@ function Builder({ year, data }: BuilderProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
-                                <Header
-                                    onResetData={handleResetData}
-                                    setSelectedYear={setSelectedYear}
-                                />
+                                <Header />
                             </motion.div>
 
                             <div ref={ref as LegacyRef<HTMLDivElement>}>
@@ -147,7 +121,7 @@ function Builder({ year, data }: BuilderProps) {
                                     animate={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
                                     exit={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
                                 >
-                                    {isLoadingYear ? (
+                                    {fetching ? (
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -178,10 +152,10 @@ function Builder({ year, data }: BuilderProps) {
                                     controlsOpen={controlsOpen}
                                     setControlsOpen={setControlsOpen}
                                     year={year}
+                                    years={years}
                                     options={options}
                                     onChange={handleOnChange}
                                     dimensions={dimensions}
-                                    setSelectedYear={handleSetSelectedYear}
                                 />
                             </motion.div>
                         </div>
@@ -214,7 +188,10 @@ function Builder({ year, data }: BuilderProps) {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0, translateY: '50px' }}
                             >
-                                <div className='flex w-full max-w-sm items-center space-x-2'>
+                                <form
+                                    onSubmit={handleOnSubmit}
+                                    className='flex w-full max-w-sm items-center space-x-2'
+                                >
                                     <Input
                                         type='text'
                                         name='userName'
@@ -230,7 +207,7 @@ function Builder({ year, data }: BuilderProps) {
                                         Submit{' '}
                                         {formIsSubmitting ? <LoadingSpinner size='sm' /> : null}
                                     </Button>
-                                </div>
+                                </form>
 
                                 {clientErrorMessage ? (
                                     <motion.div

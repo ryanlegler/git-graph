@@ -47,7 +47,7 @@ function Controls({
     handleToggleControls,
     onReset,
 }: ControlsProps) {
-    const [fetching, setFetching] = useAtom(fetchingAtom);
+    const [_, setFetching] = useAtom(fetchingAtom);
     const searchParams = useSearchParams();
     const userName = searchParams.get('userName');
     const router = useRouter();

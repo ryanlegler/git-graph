@@ -1,5 +1,5 @@
 'use client';
-import React, { LegacyRef, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { LegacyRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 
 // types
@@ -27,6 +27,10 @@ function Builder({ year, data, years }: BuilderProps) {
 
     // this is the user name that is pending to be submitted
     const [pendingUserName, setPendingUserName] = useState<null | string>(null);
+
+    // we add some delay to the enter animation if the user name is already set
+    const enterDelay = pendingUserName ? 0.3 : 0;
+
     const [controlsOpen, setControlsOpen] = useState(false);
     const [options, setOptions] = useState<Options>(INITIAL_OPTIONS);
 
@@ -107,9 +111,8 @@ function Builder({ year, data, years }: BuilderProps) {
                     {data && data?.length ? (
                         <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                             <motion.div
-                                transition={{ delay: 0.3 }}
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                                animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                 exit={{ opacity: 0 }}
                             >
                                 <Header />
@@ -131,9 +134,8 @@ function Builder({ year, data, years }: BuilderProps) {
                                         </motion.div>
                                     ) : (
                                         <motion.div
-                                            transition={{ delay: 0.3 }}
                                             initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
+                                            animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                             exit={{ opacity: 0 }}
                                         >
                                             <Graph data={data} options={options} />
@@ -143,9 +145,8 @@ function Builder({ year, data, years }: BuilderProps) {
                             </div>
 
                             <motion.div
-                                transition={{ delay: 0.3 }}
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                                animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                 exit={{ opacity: 0 }}
                             >
                                 <ControlBar
@@ -168,7 +169,7 @@ function Builder({ year, data, years }: BuilderProps) {
                             <motion.div
                                 className='flex flex-col gap-10 items-center'
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                                animate={{ opacity: 1, transition: { delay: enterDelay } }}
                                 exit={{ opacity: 0, translateY: '-50px' }}
                             >
                                 <div className='text-8xl'>🐙</div>
@@ -185,7 +186,7 @@ function Builder({ year, data, years }: BuilderProps) {
                             <motion.div
                                 className='flex flex-col gap-10 items-center relative'
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
+                                animate={{ opacity: 1, transition: { delay: enterDelay } }}
                                 exit={{ opacity: 0, translateY: '50px' }}
                             >
                                 <form

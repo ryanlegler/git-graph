@@ -1,9 +1,21 @@
 'use client';
 import { HydrationProvider, Client } from 'react-hydration-provider';
 import ActivityCalendar, { Activity } from 'react-activity-calendar';
-import { Options } from '@/types';
 
-export function Graph({ data, options }: { data?: Activity[]; options?: Options }) {
+import { Props } from 'react-activity-calendar';
+import { InferredOptions } from '../controls/types';
+export type Options = Omit<Props, 'data'>;
+
+export function Graph({ data, options }: { data?: Activity[]; options?: InferredOptions }) {
+    const { showColorLegend, showMonthLabels, showTotalCount, ...rest } = options || {};
+
+    const resolvedOptions: Options = {
+        hideColorLegend: !showColorLegend,
+        hideMonthLabels: !showMonthLabels,
+        hideTotalCount: !showTotalCount,
+        ...rest,
+    } as Options;
+
     // todo - how do i pull these from the theme instead of hardcoding?
     const colorScale = ['#161B22', '#0D4429', '#016D32', '#27A641', '#3AD353'];
     return (
@@ -15,7 +27,7 @@ export function Graph({ data, options }: { data?: Activity[]; options?: Options 
                     <ActivityCalendar
                         theme={{ light: colorScale, dark: colorScale }}
                         data={data || []}
-                        {...options}
+                        {...resolvedOptions}
                     />
                 </Client>
             </HydrationProvider>

@@ -21,9 +21,9 @@ export type SearchParamOptions = {
     blockSize?: string;
     colorScheme?: 'dark' | 'light';
     fontSize?: string;
-    hideColorLegend?: 'true' | 'false';
-    hideMonthLabels?: 'true' | 'false';
-    hideTotalCount?: 'true' | 'false';
+    showColorLegend?: 'true' | 'false';
+    showMonthLabels?: 'true' | 'false';
+    showTotalCount?: 'true' | 'false';
     showWeekdayLabels?: string;
     year?: string;
 };

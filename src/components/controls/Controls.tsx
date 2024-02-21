@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 // types
-import { ControlsProps } from './types';
+import { ControlsProps, InferredOptions } from './types';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { Form, FormItem } from '@/components/ui/form';
-import { Options } from '@/types';
 import { SwitchControl } from './switchControl';
 import { SliderControl } from './sliderControl';
 
@@ -25,18 +24,19 @@ import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
 
 import { Button } from '../ui/button';
 import { INITIAL_OPTIONS } from '../builder/constants';
+import { Day } from '@/types';
 
 export const formSchema = z.object({
-    showWeekdayLabels: z.boolean().default(false),
-    hideColorLegend: z.boolean().default(false),
-    hideMonthLabels: z.boolean().default(false),
-    hideTotalCount: z.boolean().default(false),
+    showWeekdayLabels: z.boolean().default(true),
+    showColorLegend: z.boolean().default(true),
+    showMonthLabels: z.boolean().default(true),
+    showTotalCount: z.boolean().default(true),
     blockMargin: z.number().default(4),
     blockRadius: z.number().default(2),
     blockSize: z.number().default(12),
     fontSize: z.number().default(14),
     weekStart: z.number().default(0),
-    colorScheme: z.enum(['dark', 'light']).default('dark'),
+    // colorScheme: z.enum(['dark', 'light']).default('dark'),
 });
 
 function Controls({
@@ -65,7 +65,7 @@ function Controls({
     // this was some weird thing with react-hook-form
     const derivedOptions = useWatch({
         control: form.control,
-    }) as Options;
+    }) as InferredOptions;
     useEffect(() => {
         onChange?.(derivedOptions);
     }, [derivedOptions, onChange]);
@@ -124,9 +124,9 @@ function Controls({
                             </FormItem>
 
                             <SwitchControl form={form} formKey='showWeekdayLabels' />
-                            <SwitchControl form={form} formKey='hideColorLegend' />
-                            <SwitchControl form={form} formKey='hideMonthLabels' />
-                            <SwitchControl form={form} formKey='hideTotalCount' />
+                            <SwitchControl form={form} formKey='showColorLegend' />
+                            <SwitchControl form={form} formKey='showMonthLabels' />
+                            <SwitchControl form={form} formKey='showTotalCount' />
                         </div>
                         <div className='flex gap-5 flex-col'>
                             <SliderControl form={form} formKey='blockMargin' min={2} max={20} />

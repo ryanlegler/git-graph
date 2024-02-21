@@ -1,7 +1,7 @@
-import { Options } from '@/types';
+import { InferredOptions } from '../controls/types';
 
 export type EmbedCodeModalProps = {
-    options?: Options;
+    options?: InferredOptions;
     dimensions?: { width: number; height: number };
     year: string;
     setDialogOpen: (open: boolean) => void;

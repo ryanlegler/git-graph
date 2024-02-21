@@ -1,9 +1,8 @@
-import { Options } from '@/types';
 import { z } from 'zod';
 import { formSchema } from './Controls';
 export type ControlsProps = {
-    options: Options;
-    onChange: (options: Options) => void;
+    options: InferredOptions;
+    onChange: (options: InferredOptions) => void;
     year: string;
     years?: string[];
     handleToggleControls: () => void;

@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 // types
 import { BuilderProps, userNameSchema } from './types';
 import { Header } from '../header';
-import { Options } from '@/types';
 import { ControlBar } from '../controlBar';
 import { Graph } from '../graph';
 import { Button } from '../ui/button';
@@ -17,6 +16,7 @@ import { useTransformOrigin } from './hooks/useTransformOrigin';
 import { GRAPH_OFFSET, INITIAL_OPTIONS } from './constants';
 import { useAtom } from 'jotai';
 import { fetchingAtom } from '@/app/atoms';
+import { InferredOptions } from '../controls/types';
 
 function Builder({ year, data, years }: BuilderProps) {
     const [fetching, setFetching] = useAtom(fetchingAtom);
@@ -32,7 +32,7 @@ function Builder({ year, data, years }: BuilderProps) {
     const enterDelay = pendingUserName ? 0.3 : 0;
 
     const [controlsOpen, setControlsOpen] = useState(false);
-    const [options, setOptions] = useState<Options>(INITIAL_OPTIONS);
+    const [options, setOptions] = useState<InferredOptions>(INITIAL_OPTIONS);
 
     useEffect(() => {
         if (data && !data.length) {
@@ -43,7 +43,7 @@ function Builder({ year, data, years }: BuilderProps) {
         setFormIsSubmitting(false);
     }, [data]);
 
-    const handleOnChange = useCallback((options: Options) => {
+    const handleOnChange = useCallback((options: InferredOptions) => {
         setOptions(options);
     }, []);
 

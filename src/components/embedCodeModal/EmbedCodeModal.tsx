@@ -19,10 +19,10 @@ export function EmbedCodeModal({ options, dimensions, year, setDialogOpen }: Emb
     const [copied, setCopied] = useState(false);
 
     const {
-        hideColorLegend,
+        showColorLegend,
         showWeekdayLabels,
-        hideMonthLabels,
-        hideTotalCount,
+        showMonthLabels,
+        showTotalCount,
         blockMargin,
         blockRadius,
         blockSize,
@@ -32,13 +32,13 @@ export function EmbedCodeModal({ options, dimensions, year, setDialogOpen }: Emb
 
     const embedString = useMemo(
         () =>
-            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${userName}?hideColorLegend=${hideColorLegend}&showWeekdayLabels=${showWeekdayLabels}&hideMonthLabels=${hideMonthLabels}&hideTotalCount=${hideTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${resolvedYear}"></iframe>`,
+            `<iframe frameBorder="0" height="${dimensions?.height}px" width="${dimensions?.width}px" src="https://git-graph.vercel.app/embed/${userName}?showColorLegend=${showColorLegend}&showWeekdayLabels=${showWeekdayLabels}&showMonthLabels=${showMonthLabels}&showTotalCount=${showTotalCount}&blockMargin=${blockMargin}&blockRadius=${blockRadius}&blockSize=${blockSize}&fontSize=${fontSize}&weekStart=${weekStart}&year=${resolvedYear}"></iframe>`,
         [
-            hideColorLegend,
+            showColorLegend,
             userName,
             showWeekdayLabels,
-            hideMonthLabels,
-            hideTotalCount,
+            showMonthLabels,
+            showTotalCount,
             blockMargin,
             blockRadius,
             blockSize,

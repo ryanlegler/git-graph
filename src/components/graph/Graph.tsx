@@ -4,6 +4,7 @@ import ActivityCalendar, { Activity } from 'react-activity-calendar';
 import { Options } from '@/types';
 
 export function Graph({ data, options }: { data?: Activity[]; options?: Options }) {
+    // todo - how do i pull these from the theme instead of hardcoding?
     const colorScale = ['#161B22', '#0D4429', '#016D32', '#27A641', '#3AD353'];
     return (
         <div className='p-3 bg-background rounded'>

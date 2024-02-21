@@ -54,8 +54,8 @@ export default function ColorSheet() {
 
     return (
         <div className='grid grid-cols-5 gap-10 p-7'>
-            {resolvedColors.map((color) => (
-                <div key={color} className='flex gap-2 flex-col'>
+            {resolvedColors.map((color, index) => (
+                <div key={index} className='flex gap-2 flex-col'>
                     <div className='h-24 rounded-lg' style={{ backgroundColor: color.value }}></div>
                     <p className='text-xs font-mono'>Name: {color.name}</p>
                     <p className='text-xs font-mono'>Value: {color.value}</p>

@@ -57,6 +57,11 @@ function Controls({
         defaultValues: options,
     });
 
+    const handleReset = useCallback(() => {
+        form.reset(INITIAL_OPTIONS);
+        onReset?.();
+    }, [form, onReset]);
+
     // this was some weird thing with react-hook-form
     const derivedOptions = useWatch({
         control: form.control,
@@ -88,7 +93,7 @@ function Controls({
 
                     <div className='flex'>
                         {hasChanges ? (
-                            <Button variant='ghost' size='icon' onClick={onReset}>
+                            <Button variant='ghost' size='icon' onClick={handleReset}>
                                 <ReloadIcon className='h-4 w-4' />
                             </Button>
                         ) : null}

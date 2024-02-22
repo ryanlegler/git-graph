@@ -20,45 +20,37 @@ const config = {
 
         extend: {
             colors: {
-                ['github.000']: '#0D1116',
-                ['github.100']: '#161B22',
-                ['github.200']: '#0D4429',
-                ['github.300']: '#016D32',
-                ['github.400']: '#27A641',
                 ['github.500']: '#3AD353',
-                border: 'hsl(var(--border))',
-                input: 'hsl(var(--input))',
-                darkBackground: '#0D1116',
-                ring: '#27A641',
-                background: 'hsl(var(--background))',
-                foreground: 'hsl(var(--foreground))',
+                border: 'var(--border)',
+                ring: 'var(--github-300)',
+                background: 'var(--background)',
+                foreground: 'var(--foreground)',
                 primary: {
-                    DEFAULT: 'hsl(var(--primary))',
-                    foreground: 'hsl(var(--primary-foreground))',
+                    DEFAULT: 'var(--foreground)',
+                    foreground: 'var(--background)',
+                    background: 'var(--github-000)',
                 },
                 secondary: {
-                    DEFAULT: 'hsl(var(--secondary))',
-                    foreground: 'hsl(var(--secondary-foreground))',
+                    DEFAULT: 'var(--github-100)',
+                    foreground: 'var(--github-400)',
                 },
                 destructive: {
                     DEFAULT: 'hsl(var(--destructive))',
                     foreground: 'hsl(var(--destructive-foreground))',
                 },
                 muted: {
-                    DEFAULT: '#A4A4A4',
-                    foreground: 'hsl(var(--muted-foreground))',
+                    DEFAULT: 'var(--muted)',
+                    foreground: 'var(--muted-foreground)',
                 },
                 accent: {
-                    DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))',
+                    DEFAULT: 'var(--github-400)',
+                    foreground: 'var(--foreground)',
+                    highlight: 'var(--github-500)',
+                    secondary: 'var(--github-200)',
                 },
                 popover: {
-                    DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))',
-                },
-                card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))',
+                    DEFAULT: 'var(--background)',
+                    foreground: 'var(--foreground)',
                 },
             },
             borderRadius: {

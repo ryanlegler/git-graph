@@ -87,7 +87,7 @@ function Controls({
 
     return (
         <Form {...form} data-testid='controls'>
-            <div className='bg-black p-5 pb-8 rounded-2xl flex gap-5 flex-col'>
+            <div className='bg-background p-5 pb-8 rounded-2xl flex gap-5 flex-col'>
                 <div className='flex justify-between'>
                     <h2 className='text-2xl font-bold'>Controls</h2>
 

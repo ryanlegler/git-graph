@@ -4,24 +4,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-// setup tokens for github greens
-// setup variants
-
 const buttonVariants = cva(
     'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
     {
         variants: {
             variant: {
                 default:
-                    'bg-github.400 border border-github.200 hover:bg-github.500  text-primary-foreground',
-                destructive:
-                    'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
-                outline:
-                    'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+                    'bg-accent border border-accent-secondary hover:bg-accent-highlight  text-primary-foreground',
                 secondary:
-                    'bg-github.100 text-github.400 shadow-sm border  border-transparent hover:border-github.200',
+                    'bg-secondary text-secondary-foreground shadow-sm border  border-transparent hover:border-accent-secondary ',
                 ghost: 'hover:text-primary text-muted-foreground',
-                link: 'text-primary underline-offset-4 hover:underline',
             },
             size: {
                 default: 'px-4 h-[34px] text-md',

@@ -20,11 +20,11 @@ function Header({}: HeaderProps) {
         <header data-testid='header'>
             <div
                 data-testid='breadcrumb'
-                className=' bg-black flex gap-1 p-1 pr-4 rounded-full items-center'
+                className=' bg-background flex gap-1 p-1 pr-4 rounded-full items-center'
             >
                 <div
                     onClick={handleClickHome}
-                    className='rounded-full flex justify-center items-center bg-github.100 hover:bg-github.400 size-9 text-2xl cursor-pointer'
+                    className='rounded-full flex justify-center items-center bg-secondary hover:bg-accent size-9 text-2xl cursor-pointer'
                 >
                     🐙
                 </div>

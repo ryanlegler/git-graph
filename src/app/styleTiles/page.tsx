@@ -34,23 +34,44 @@ export default function ColorSheet() {
 
     const resolvedColors: ColorEntry[] = colors.reduce((acc: ColorEntry[], color: string) => {
         const obj: string | ColorObject = config.theme.extend.colors[color];
+
+        // console.log('obj', obj);
+
+        const colors = Object.keys(obj).map((key) => {
+            if (typeof obj?.[key] === 'string') {
+                return {
+                    name: `${color}.${key}`,
+                    value: obj?.[key],
+                };
+            }
+            // return {
+            //     name: `${color}.${key}`,
+            //     value: obj?.[key],
+            // };
+        });
+        console.log('colors', colors);
+        // acc.push(colors);
+
         if (typeof obj === 'string') {
             acc.push({
                 name: color,
                 value: config?.theme?.extend?.colors?.[color],
             });
         } else {
-            acc.push({
-                name: `${color}.DEFAULT`,
-                value: obj.DEFAULT,
+            const colors = Object.keys(obj).map((key) => {
+                if (typeof obj?.[key] === 'string') {
+                    return {
+                        name: `${color}.${key}`,
+                        value: obj?.[key],
+                    };
+                }
             });
-            acc.push({
-                name: `${color}.foreground`,
-                value: obj.foreground,
-            });
+            acc.push(...colors.flat());
         }
         return acc;
     }, []);
+
+    console.log('resolvedColors', resolvedColors);
 
     return (
         <div className='grid grid-cols-5 gap-10 p-7'>

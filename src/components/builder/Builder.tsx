@@ -23,7 +23,7 @@ function Builder({ year, data, years }: BuilderProps) {
     const router = useRouter();
     const [ref, { width, height }] = useMeasure();
     const [clientErrorMessage, setClientErrorMessage] = useState('');
-    const [formIsSubmitting, setFormIsSubmitting] = useState(false);
+    const [formIsSubmitting, setFormIsSubmitting] = useState(true);
 
     // this is the user name that is pending to be submitted
     const [pendingUserName, setPendingUserName] = useState<null | string>(null);
@@ -96,7 +96,7 @@ function Builder({ year, data, years }: BuilderProps) {
         <main
             ref={pageRef as any}
             data-testid='builder'
-            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center justify-center bg-github.000'
+            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center justify-center bg-primary-background'
         >
             <div
                 ref={mouseRef}
@@ -175,10 +175,10 @@ function Builder({ year, data, years }: BuilderProps) {
                                 <div className='text-8xl'>🐙</div>
                                 <div className='flex flex-col gap-4 items-center'>
                                     <h1 className='text-5xl font-semibold'>Git Graph</h1>
-                                    <div className='text-center text-lg text-muted max-w-3xl leading-snug antialiased'>
-                                        Get a personal view of your Github contribution history in
-                                        just a few clicks. Customize the look and feel as you see
-                                        fit, and embed it on your site in just a few clicks.
+                                    <div className='text-center text-lg text-muted-foreground max-w-3xl leading-snug antialiased'>
+                                        Get a personal view of your Github contribution history.
+                                        Customize the look and feel as you see fit, and embed it on
+                                        your site in just a few clicks.
                                     </div>
                                 </div>
                             </motion.div>

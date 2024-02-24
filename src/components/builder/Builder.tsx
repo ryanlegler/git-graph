@@ -173,7 +173,7 @@ function Builder({ year, data, years }: BuilderProps) {
                             </div>
 
                             <motion.div
-                                className='min-w-full'
+                                className='min-w-full md:min-w-[auto]'
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                 exit={{ opacity: 0 }}

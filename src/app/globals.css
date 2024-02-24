@@ -49,10 +49,9 @@
     .spotlight {
         transform: scale(2);
         position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+        width: 100%; /* ensure the div doesn't exceed the viewport width */
+        height: 100vh; /* make the div the same height as the viewport */
+        overflow: hidden;
         background: radial-gradient(
             circle,
             rgba(0, 0, 0, 0) 0%,

@@ -103,8 +103,8 @@ function Controls({
                     </div>
                 </div>
                 <form>
-                    <div className='grid grid-cols-2 gap-7'>
-                        <div className='flex gap-5 flex-col '>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-7'>
+                        <div className='flex gap-1 md:gap-5 flex-col '>
                             <FormItem className='flex gap-2 w-full justify-between align-middle'>
                                 <Label className='flex items-center' htmlFor={'year'}>
                                     Year

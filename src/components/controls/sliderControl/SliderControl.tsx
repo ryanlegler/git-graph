@@ -13,8 +13,10 @@ function SliderControl({ formKey, form, max, min, step = 1 }: SliderControlProps
             control={form.control}
             name={formKey}
             render={({ field }) => (
-                <div className='flex flex-col gap-3'>
-                    <Label htmlFor={formKey}>{FORM_LABELS[formKey]}</Label>
+                <div className='flex md:flex-col gap-3'>
+                    <Label className='w-2/3 md:w-full' htmlFor={formKey}>
+                        {FORM_LABELS[formKey]}
+                    </Label>
                     <Slider
                         className='w-full'
                         id={formKey}

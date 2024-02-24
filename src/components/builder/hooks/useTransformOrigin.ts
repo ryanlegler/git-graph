@@ -19,5 +19,5 @@ export function useTransformOrigin() {
         return `${50 - (deltaX / centerX) * 20}% ${50 - (deltaY / centerY) * 20}%`;
     }, [x, y, width, height]);
 
-    return { pageRef, mouseRef, transformOrigin };
+    return { pageRef, mouseRef, transformOrigin, width, height };
 }

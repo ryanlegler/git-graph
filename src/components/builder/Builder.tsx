@@ -77,7 +77,31 @@ function Builder({ year, data, years }: BuilderProps) {
 
     // Custom hook that takes the ref of the page and the ref of the mouse
     // and returns the transformOrigin for the spotlight effect
-    const { transformOrigin, pageRef, mouseRef } = useTransformOrigin();
+    const {
+        transformOrigin,
+        pageRef,
+        mouseRef,
+        width: pageWidthRaw,
+        height: pageHeight,
+    } = useTransformOrigin();
+
+    // given the page height and width and the graph height and width get a transform that will scale the graph to fit the page
+    const pageWidth = pageWidthRaw - 30; // this gives us some padding
+    const transform = useMemo(() => {
+        if (
+            width &&
+            height &&
+            pageWidth &&
+            pageHeight &&
+            (width > pageWidth || height > pageHeight)
+        ) {
+            const pageRatio = pageWidth / pageHeight;
+            const graphRatio = width / height;
+            const scale = pageRatio > graphRatio ? pageHeight / height : pageWidth / width;
+            return `scale(${scale}) `;
+        }
+        return 'scale(1)';
+    }, [width, height, pageWidth, pageHeight]);
 
     useEffect(() => {
         setFetching(false);
@@ -96,7 +120,7 @@ function Builder({ year, data, years }: BuilderProps) {
         <main
             ref={pageRef as any}
             data-testid='builder'
-            className='overflow-hidden graphPaper max-h-screen min-h-screen flex flex-col items-center justify-center bg-primary-background'
+            className='overflow-hidden relative graphPaper max-h-screen min-h-screen flex flex-col items-center justify-center bg-primary-background'
         >
             <div
                 ref={mouseRef}
@@ -109,7 +133,7 @@ function Builder({ year, data, years }: BuilderProps) {
             >
                 <AnimatePresence>
                     {data && data?.length ? (
-                        <div className='flex min-w-[900px] max-w-[1500px]  max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
+                        <div className='flex md:min-w-[900px] max-w-full md:max-w-[1500px] md:max-h-[900px] flex-col items-center justify-between gap-10 flex-1'>
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1, transition: { delay: 0.3 } }}
@@ -118,7 +142,7 @@ function Builder({ year, data, years }: BuilderProps) {
                                 <Header />
                             </motion.div>
 
-                            <div ref={ref as LegacyRef<HTMLDivElement>}>
+                            <div data-testid='graph-wrap' ref={ref as LegacyRef<HTMLDivElement>}>
                                 <motion.div
                                     initial={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
                                     animate={{ translateY: controlsOpen ? GRAPH_OFFSET : 0 }}
@@ -138,13 +162,18 @@ function Builder({ year, data, years }: BuilderProps) {
                                             animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                             exit={{ opacity: 0 }}
                                         >
-                                            <Graph data={data} options={options} />
+                                            <Graph
+                                                style={{ transform }}
+                                                data={data}
+                                                options={options}
+                                            />
                                         </motion.div>
                                     )}
                                 </motion.div>
                             </div>
 
                             <motion.div
+                                className='min-w-full'
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1, transition: { delay: 0.3 } }}
                                 exit={{ opacity: 0 }}
@@ -175,10 +204,10 @@ function Builder({ year, data, years }: BuilderProps) {
                                 <div className='text-8xl'>🐙</div>
                                 <div className='flex flex-col gap-4 items-center'>
                                     <h1 className='text-5xl font-semibold'>Git Graph</h1>
-                                    <div className='text-center text-lg text-muted-foreground max-w-3xl leading-snug antialiased'>
-                                        Get a personal view of your Github contribution history.
-                                        Customize the look and feel as you see fit, and embed it on
-                                        your site in just a few clicks.
+                                    <div className='text-center text-lg text-muted-foreground max-w-3xl leading-snug antialiased p-4    '>
+                                        Get a personal view of your Github contribution history in
+                                        just a few clicks. Customize the look and feel as you see
+                                        fit, and embed it on your site in minutes.
                                     </div>
                                 </div>
                             </motion.div>

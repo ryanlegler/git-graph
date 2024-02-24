@@ -5,6 +5,7 @@ import { Graph } from '@/components/graph';
 import { SearchParamOptions } from '@/components/builder/types';
 import { getContributions } from '@/dataLayer/getContributions';
 import { getZeroFilledContributions } from '@/lib/utils';
+import { InferredOptions } from '@/components/controls/types';
 
 export default async function Embed({
     searchParams,
@@ -15,7 +16,7 @@ export default async function Embed({
 }) {
     const { year, ...rest } = searchParams || {};
     const { username } = params || {};
-    const options = getHydratedSearchParams(rest);
+    const options: InferredOptions = getHydratedSearchParams(rest) as InferredOptions;
     const resolvedYear = year || new Date().getFullYear().toString();
     const data = await getContributions({ userName: username, year: resolvedYear });
 

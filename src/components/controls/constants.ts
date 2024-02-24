@@ -10,5 +10,5 @@ export const FORM_LABELS: Record<keyof InferredOptions, string> = {
     blockSize: 'Block Size',
     fontSize: 'Font Size',
     weekStart: 'Week Start',
-    colorScheme: 'Color Scheme',
+    // colorScheme: 'Color Scheme',
 };

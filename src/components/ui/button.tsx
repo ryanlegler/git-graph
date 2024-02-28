@@ -20,7 +20,7 @@ const _stroke = 'bg-secondary text-secondary-foreground shadow-sm border  border
 const _strokeHover = 'hover:border-accent-secondary';
 
 // Ghost
-export const _ghost = 'text-muted-foreground hover:text-primary'; // Maybe can refactor out?
+export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-secondary'; // Maybe can refactor out?
 
 // Sizes
 export const _size = 'px-4 h-[34px] text-md';

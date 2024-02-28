@@ -5,6 +5,7 @@ const config: Config = tailwindConfig;
 import './styles.css';
 import { IconButton } from '@/components/ui/icon-button';
 import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
+import { ButtonSheet } from '@/components/ui/component-sheet';
 
 interface ColorObject {
     DEFAULT?: string;
@@ -27,7 +28,7 @@ interface Config {
     };
 }
 
-export default function ColorSheet() {
+export function ColorSheet() {
     const colors = config.theme.extend.colors;
     const resolvedColors: ColorEntry[] = Object.keys(colors).reduce(
         (acc: ColorEntry[], color: string) => {
@@ -54,44 +55,23 @@ export default function ColorSheet() {
         []
     );
     return (
+        <div className='grid grid-cols-5 gap-10 p-7'>
+            {resolvedColors.map((color, index) => (
+                <div key={index} className='flex gap-2 flex-col'>
+                    <div className='h-24 rounded-lg' style={{ backgroundColor: color.value }}></div>
+                    <p className='text-xs font-mono'>Name: {color.name}</p>
+                    <p className='text-xs font-mono'>Value: {color.value}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export default function ThemePage() {
+    return (
         <div className='o'>
-            <div className='grid grid-cols-5 gap-10 p-7'>
-                {resolvedColors.map((color, index) => (
-                    <div key={index} className='flex gap-2 flex-col'>
-                        <div
-                            className='h-24 rounded-lg'
-                            style={{ backgroundColor: color.value }}
-                        ></div>
-                        <p className='text-xs font-mono'>Name: {color.name}</p>
-                        <p className='text-xs font-mono'>Value: {color.value}</p>
-                    </div>
-                ))}
-            </div>
-            <div className='space-y-2 p-7'>
-                <h2>Buttons</h2>
-                <h3>Variants</h3>
-                <div className='flex gap-2 pb-2'>
-                    <Button variant='default'>Button</Button>
-                    <Button variant='secondary'>Button</Button>
-                    <Button variant='ghost'>Button</Button>
-                </div>
-                <h3>Sizes</h3>
-                <div className='flex gap-2 pb-2'>
-                    <Button>Button</Button>
-                    <Button size='sm'>Button</Button>
-                    <Button size='lg'>Button</Button>
-                    <Button size='icon'>Button</Button>
-                </div>
-                <h3>Icon Button</h3>
-                <div className='flex gap-2 pb-2'>
-                    <Button size='icon'>
-                        <ReloadIcon className='h-4 w-4' />
-                    </Button>
-                    <IconButton>
-                        <ReloadIcon className='h-4 w-4' />
-                    </IconButton>
-                </div>
-            </div>
+            <ColorSheet />
+            <ButtonSheet />
         </div>
     );
 }

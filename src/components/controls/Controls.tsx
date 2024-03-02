@@ -25,6 +25,7 @@ import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
 import { Button } from '../ui/button';
 import { INITIAL_OPTIONS } from '../builder/constants';
 import { Day } from '@/types';
+import { IconButton } from '../ui/icon-button';
 
 export const formSchema = z.object({
     showWeekdayLabels: z.boolean().default(true),
@@ -92,14 +93,14 @@ function Controls({
                     <h2 className='text-2xl font-bold'>Controls</h2>
 
                     <div className='flex'>
-                        {hasChanges ? (
-                            <Button variant='ghost' size='icon' onClick={handleReset}>
+                        {hasChanges && (
+                            <IconButton onClick={handleReset}>
                                 <ReloadIcon className='h-4 w-4' />
-                            </Button>
-                        ) : null}
-                        <Button variant='ghost' size='icon' onClick={handleToggleControls}>
+                            </IconButton>
+                        )}
+                        <IconButton onClick={handleToggleControls}>
                             <Cross2Icon className='h-4 w-4' />
-                        </Button>
+                        </IconButton>
                     </div>
                 </div>
                 <form>

@@ -10,11 +10,14 @@ const title = 'Embeddable Github Contribution Graph';
 const description =
     'Get a personal view of your Github contribution history in just a few clicks. Customize the look and feel as you see fit, and embed it on your site in minutes.';
 
+const ogImage = 'https://www.gitgraph.dev/og-image.png';
+
 const twitter: Twitter = {
     card: 'summary_large_image',
     description,
     site: '@site',
     title,
+    images: [ogImage],
 };
 
 export const metadata: Metadata = {
@@ -25,6 +28,7 @@ export const metadata: Metadata = {
         locale: 'en_US',
         url: 'https://www.gitgraph.dev/',
         siteName,
+        images: [ogImage],
     },
     twitter,
 };

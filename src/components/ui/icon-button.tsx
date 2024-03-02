@@ -3,7 +3,9 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
-import { _disabled, _display, _focus, _ghost, _icon, _rest, _size, _typography } from './button';
+import { _disabled, _display, _focus, _ghost, _rest, _size, _typography } from './button';
+
+export const _icon = 'h-9 w-9'; // Can refactor out to only icon button
 
 const buttonVariants = cva([_display, _typography, _focus, _disabled, _rest, _icon, _ghost]);
 

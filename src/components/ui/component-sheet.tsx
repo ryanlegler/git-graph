@@ -18,13 +18,9 @@ export const ButtonSheet = () => {
                 <Button>Button</Button>
                 <Button size='sm'>Button</Button>
                 <Button size='lg'>Button</Button>
-                <Button size='icon'>Button</Button>
             </div>
             <h3>Icon Button</h3>
             <div className='flex gap-2 pb-2'>
-                <Button size='icon'>
-                    <ReloadIcon className='h-4 w-4' />
-                </Button>
                 <IconButton>
                     <ReloadIcon className='h-4 w-4' />
                 </IconButton>

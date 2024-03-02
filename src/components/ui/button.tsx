@@ -20,13 +20,12 @@ const _stroke = 'bg-secondary text-secondary-foreground shadow-sm border  border
 const _strokeHover = 'hover:border-accent-secondary';
 
 // Ghost
-export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-secondary'; // Maybe can refactor out?
+export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-secondary'; // Only used in icon button
 
 // Sizes
 export const _size = 'px-4 h-[34px] text-md';
 export const _sm = 'h-8 rounded-md px-3 text-xs';
 export const _lg = 'h-10 rounded-md px-8';
-export const _icon = 'h-9 w-9'; // Can refactor out to only icon button
 
 const buttonVariants = cva([_display, _typography, _focus, _disabled, _rest], {
     variants: {
@@ -39,7 +38,6 @@ const buttonVariants = cva([_display, _typography, _focus, _disabled, _rest], {
             default: _size,
             sm: _sm,
             lg: _lg,
-            icon: _icon,
         },
     },
     defaultVariants: {

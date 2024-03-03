@@ -20,7 +20,13 @@ const config = {
 
         extend: {
             colors: {
-                ['github.500']: '#3AD353',
+                github: {
+                    '100': 'var(--github-100)',
+                    '200': 'var(--github-200)',
+                    '300': 'var(--github-300)',
+                    '400': 'var(--github-400)',
+                    '500': 'var(--github-500)',
+                },
                 border: 'var(--border)',
                 ring: 'var(--github-300)',
                 background: 'var(--background)',
@@ -51,6 +57,22 @@ const config = {
                 popover: {
                     DEFAULT: 'var(--background)',
                     foreground: 'var(--foreground)',
+                },
+
+                // New tokens
+                // Is this primary?
+                interactive: {
+                    DEFAULT: 'var(--github-400)',
+                    foreground: 'var(--background)',
+                    highlight: 'var(--github-500)',
+                    secondary: 'var(--github-300)',
+                },
+
+                // is this just muted? not a great name
+                hollow: {
+                    DEFAULT: 'var(--background)',
+                    foreground: 'var(--github-400)', // interactive-defualt
+                    highlight: 'var(--github-100)',
                 },
             },
             borderRadius: {

@@ -12,15 +12,16 @@ export const _disabled = 'disabled:pointer-events-none disabled:opacity-50 ';
 export const _rest = 'transition-colors ';
 
 // Fill
-const _fill = 'bg-accent border border-accent-secondary text-primary-foreground';
-const _fillHover = 'hover:bg-accent-highlight';
+const _fill = 'bg-interactive text-interactive-foreground border border-interactive';
+const _fillHover = 'hover:bg-interactive-highlight';
 
 // Stroke
-const _stroke = 'bg-secondary text-secondary-foreground shadow-sm border  border-transparent';
-const _strokeHover = 'hover:border-accent-secondary';
+const _stroke = 'bg-hollow text-hollow-foreground border border-interactive';
+const _strokeHover = 'hover:bg-hollow-highlight';
 
 // Ghost
-export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-secondary'; // Only used in icon button
+// Only used in icon button?
+export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-secondary';
 
 // Sizes
 export const _size = 'px-4 h-[34px] text-md';

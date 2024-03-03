@@ -13,12 +13,6 @@ export const ButtonSheet = () => {
                 <Button variant='secondary'>Button</Button>
                 <Button variant='ghost'>Button</Button>
             </div>
-            <h3>Sizes</h3>
-            <div className='flex gap-2 pb-2'>
-                <Button size='lg'>Button</Button>
-                <Button>Button</Button>
-                <Button size='sm'>Button</Button>
-            </div>
             <h3>Icon Button</h3>
             <div className='flex gap-2 pb-2'>
                 <IconButton>

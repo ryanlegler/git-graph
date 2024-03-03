@@ -24,25 +24,17 @@ export const _ghost = 'text-muted-foreground hover:text-primary hover:bg-seconda
 
 // Sizes
 export const _size = 'px-4 h-[34px] text-md';
-export const _sm = 'h-8 rounded-md px-3 text-xs';
-export const _lg = 'h-10 rounded-md px-8';
 
-const buttonVariants = cva([_display, _typography, _focus, _disabled, _rest], {
+const buttonVariants = cva([_display, _typography, _focus, _disabled, _rest, _size], {
     variants: {
         variant: {
             default: [_fill, _fillHover],
             secondary: [_stroke, _strokeHover],
             ghost: [_ghost],
         },
-        size: {
-            default: _size,
-            sm: _sm,
-            lg: _lg,
-        },
     },
     defaultVariants: {
         variant: 'default',
-        size: 'default',
     },
 });
 
@@ -53,15 +45,9 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, asChild = false, ...props }, ref) => {
+    ({ className, variant, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : 'button';
-        return (
-            <Comp
-                className={cn(buttonVariants({ variant, size, className }))}
-                ref={ref}
-                {...props}
-            />
-        );
+        return <Comp className={cn(buttonVariants({ variant, className }))} ref={ref} {...props} />;
     }
 );
 Button.displayName = 'Button';

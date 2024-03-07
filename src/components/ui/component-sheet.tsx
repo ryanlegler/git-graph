@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { IconButton } from '@/components/ui/icon-button';
-import { Cross2Icon, ReloadIcon } from '@radix-ui/react-icons';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 export const ButtonSheet = () => {
     return (
